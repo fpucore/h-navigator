@@ -1,0 +1,118 @@
+#!/usr/bin/env bash
+
+# -----------------------------------------------------------------------------
+# H Navigator compatibility patch
+# Copyright (c) 2026 Harmonious Platform Systems
+# https://www.freedompublishersunion.net/h-linux.html
+#
+# This Source Code Form is subject to the terms of the Mozilla Public 
+# License, v. 2.0. If a copy of the MPL was not distributed with this 
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+# -----------------------------------------------------------------------------
+
+# H Navigator compatibility patch, for Brave > Brave Origin
+# User-scope: installs symlink into $HOME/.local/bin (no sudo required)
+
+set -euo pipefail
+
+ensure_symlink() {
+  local target="$1"   # the file the symlink should point to
+  local linkpath="$2" # the symlink path to check/create
+
+  # sanity check
+  if [[ -z "$target" || -z "$linkpath" ]]; then
+    echo "Usage: ensure_symlink TARGET LINKPATH" >&2
+    return 2
+  fi
+
+  # If it already exists and is a symlink that points to the correct target, do nothing
+  if [[ -L "$linkpath" ]]; then
+    if [[ "$(readlink -f "$linkpath")" == "$(readlink -f "$target")" ]]; then
+      return 0
+    else
+      echo "Warning: $linkpath is a symlink to an incorrect target. Executing self-healing." >&2
+      rm -f -- "$linkpath"
+    fi
+  elif [[ -e "$linkpath" ]]; then
+    # Exists but not a symlink (regular file/dir). Back up and replace.
+    echo "Warning: $linkpath exists and is not a symlink. Backing up and replacing." >&2
+    mv -- "$linkpath" "${linkpath}.bak.$(date +%s)" || return 3
+  fi
+
+  # Ensure parent directory exists for the link
+  mkdir -p "$(dirname -- "$linkpath")"
+
+  # Create the symlink
+  ln -s -- "$target" "$linkpath" || {
+    echo "Failed to create symlink $linkpath -> $target" >&2
+    return 4
+  }
+
+  return 0
+}
+
+print_path_instructions() {
+  cat <<'EOF'
+Note: $HOME/.local/bin is not in your PATH.
+To use 'brave-origin' directly, add it to your shell configuration:
+
+  --- fish ---
+  Run this command once (persists across sessions):
+      fish_add_path -U $HOME/.local/bin
+
+  Or, if you prefer editing the config file (~/.config/fish/config.fish):
+      set -gx PATH $HOME/.local/bin $PATH
+
+  --- bash ---
+  Add to ~/.bashrc (or ~/.bash_profile on macOS/login shells):
+      export PATH="$HOME/.local/bin:$PATH"
+  Then reload:
+      source ~/.bashrc
+
+  --- zsh ---
+  Add to ~/.zshrc:
+      export PATH="$HOME/.local/bin:$PATH"
+  Then reload:
+      source ~/.zshrc
+EOF
+}
+
+# --- Main ---
+
+# Target script and the user-scope symlink we want to provide (brave-origin)
+TARGET="$HOME/.hwm/scripts/h_navigator_exec"
+LINKPATH="$HOME/.local/bin/brave-origin"
+
+# Verify target exists
+if [[ ! -e "$TARGET" ]]; then
+  echo "Error: target $TARGET does not exist." >&2
+  exit 1
+fi
+
+# Ensure target is executable
+if [[ ! -x "$TARGET" ]]; then
+  chmod +x "$TARGET" || {
+    echo "Failed to make $TARGET executable" >&2
+    exit 1
+  }
+fi
+
+# Ensure $HOME/.local/bin exists
+mkdir -p "$HOME/.local/bin"
+
+# Create/repair the symlink
+if ! ensure_symlink "$TARGET" "$LINKPATH"; then
+  rc=$?
+  echo "ensure_symlink failed with code $rc" >&2
+  exit 1
+fi
+
+# Warn if $HOME/.local/bin is not in PATH and show per-shell instructions
+case ":$PATH:" in
+  *":$HOME/.local/bin:"*) ;;
+  *) print_path_instructions ;;
+esac
+
+# Hand off to h_navigator_exec
+exec "$TARGET" "$@"
+#echo "Debug: It works!"
