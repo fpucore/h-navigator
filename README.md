@@ -5,6 +5,7 @@ H Navigator is a highly-modified, privacy-hardened runtime and web browser for H
 ---
 
 #### Structure
+
 *   `INSTALL.sh`: The automated deployment and patching script.
 *   `PKGBUILD`: The configuration for building the `h-navigator` package on H-Linux.
 *   `patch/`: Contains a patched launcher for syntax correction and improved system-level integration.
@@ -14,6 +15,7 @@ H Navigator is a highly-modified, privacy-hardened runtime and web browser for H
 ---
 
 #### Prerequisites
+
 Ensure the following are installed on H-Linux for intended functionality:
 
 *   **Logic & UI:** `xdotool`, `zenity`, `openssl`, `coreutils`
@@ -24,6 +26,7 @@ Ensure the following are installed on H-Linux for intended functionality:
 ---
 
 #### Build and Installation
+
 To build and install H Navigator and its associated components on H-Linux:
 
 1. Open a terminal console and navigate to the project directory.
@@ -35,6 +38,7 @@ To build and install H Navigator and its associated components on H-Linux:
 ---
 
 #### Unique Features
+
 *   **Singleton Jailbreak:** Automated stale-lock removal.
 *   **Sextant Integration:** Live core monitoring via the `sextant.sh` script.
 *   **Hardened Flags:** Pre-configured for H-Linux proxy server usage and user-data standards.
@@ -43,6 +47,7 @@ To build and install H Navigator and its associated components on H-Linux:
 ---
 
 #### License
+
 H Navigator and its associated scripts are distributed under the **Mozilla Public License 2.0 (MPL 2.0)**. 
 
 Copyright (c) 2026 Harmonious Platform Systems
