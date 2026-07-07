@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # -----------------------------------------------------------------------------
-# H Navigator - Version 4.0.0-2
+# H Navigator - Version 4.0.1-1
 # Copyright (c) 2026 Harmonious Platform Systems
 # https://www.freedompublishersunion.net/h-linux.html
 #
@@ -30,7 +30,7 @@ tput setaf 1; figlet -f banner "H Navigator"; tput sgr0
 echo "With AI, Search Bridge and SEXTANT."
 echo
 ~/.hwm/scripts/h_navigator_version_patch --version
-echo "Version 4.0.0-2, based on Brave Origin (nightly). 🔥 [Patched with Singleton Jailbreak]"
+echo "Version 4.0.1-1, based on Brave Origin (nightly). 🔥 [Patched with Singleton Jailbreak]"
 echo
 echo "Loaded."
 echo "running"
@@ -109,14 +109,14 @@ fi
     # Search for all windows belonging to the master Brave PID
     WIDS=$(xdotool search --pid "$BRAVE_PID" 2>/dev/null)
     for WID in $WIDS; do
-      xdotool set_window --name "H Navigator. Version 4.0.0-2, based on Brave Origin (nightly). [Patched with Singleton Jailbreak]" "$WID"
+      xdotool set_window --name "H Navigator. Version 4.0.1-1, based on Brave Origin (nightly). [Patched with Singleton Jailbreak]" "$WID"
     done
     sleep 2
   done ) &
   
 # Above works and can still be used if this fails
 #while xdotool getwindowname "$WINDOW_ID" >/dev/null 2>&1; do
-#    xdotool set_window --name "H Navigator. Version 4.0.0-2, based on Brave Origin (nightly). [Patched with Singleton Jailbreak]"
+#    xdotool set_window --name "H Navigator. Version 4.0.1-1, based on Brave Origin (nightly). [Patched with Singleton Jailbreak]"
 #    sleep 2
 #done
 
