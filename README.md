@@ -1,6 +1,6 @@
 ### H Navigator
 
-H Navigator is a highly-modified, privacy-hardened runtime and web browser for H-Linux, based on Brave Origin (nightly).
+H Navigator is a highly-modified, privacy-hardened service runtime and web browser for H-Linux, built on Brave Origin (nightly).
 
 ---
 
