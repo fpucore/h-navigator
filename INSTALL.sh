@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # -----------------------------------------------------------------------------
-# H Navigator Installer - Version 4.1.0-1
+# H Navigator Installer - Version 4.3.0-1
 # Copyright (c) 2026 Harmonious Platform Systems
 # https://www.freedompublishersunion.net/h-linux.html
 #
@@ -53,7 +53,7 @@ echo
 
 # Build and Installation confirmation
 echo
-echo "You have successfully installed H Navigator!"
+echo "You have successfully installed (or updated) H Navigator!"
 echo
 
 #end
