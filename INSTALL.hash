@@ -1,7 +1,8 @@
-#!/bin/bash
+#!/bin/hash
+source /usr/local/lib/h-linux-env.hash
 
 # -----------------------------------------------------------------------------
-# H Navigator Installer - Version 4.3.0-1
+# H Navigator Installer - Version 4.4.0-1
 # Copyright (c) 2026 Harmonious Platform Systems
 # https://www.freedompublishersunion.net/h-linux.html
 #

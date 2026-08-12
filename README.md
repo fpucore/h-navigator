@@ -31,9 +31,9 @@ To build and install H Navigator and its associated components on H-Linux:
 
 1. Open a terminal console and navigate to the project directory.
 2. Grant execution permissions to the installer:
-   `chmod +x INSTALL.sh`
+   `chmod +x INSTALL.hash`
 3. Execute the installer:
-   `./INSTALL.sh`
+   `./INSTALL.hash`
 
 ---
 
