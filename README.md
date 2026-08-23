@@ -14,11 +14,20 @@ H Navigator is a highly-modified, privacy-hardened service runtime and web brows
 
 ---
 
+#### Dependencies
+
+Ensure the following are installed and available on GNU Operating System / H-Linux for core functionality:
+
+*   `h-linux environment library`
+*   `nullfsvfs-dkms`
+
+---
+
 #### Prerequisites
 
-Ensure the following are installed on H-Linux for intended functionality:
+Also, ensure the following are installed on GNU Operating System / H-Linux for intended functionality:
 
-*   **Logic & UI:** `xdotool`, `zenity`, `openssl`, `coreutils`
+*   **Logic & UI:** `xdotool`, `zenity`, `openssl`, `coreutils` 
 *   **Branding:** `viu`, `figlet`
 *   **Monitoring:** `procps-ng`
 *   **Terminal consoles:** `cherry-terminal` and `xterm`

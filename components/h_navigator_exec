@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # -----------------------------------------------------------------------------
-# H Navigator - Version 4.4.0-1
+# H Navigator - Version 4.6.2-1
 # Copyright (c) 2026 Harmonious Platform Systems
 # https://www.freedompublishersunion.net/h-linux.html
 #
@@ -10,17 +10,20 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 # -----------------------------------------------------------------------------
 
-#h navigator script for blackbox-hwm, Script version 13.2
+#h navigator script for blackbox-hwm, Script version 15.2
 
 #CHANGELOG NOTABLES
 #
+#Version 4.6.0 marked the introduction of font cache startup changes
+#Version 4.5.0 marked transition from /dev/null > ~/null (nullfsvsf) < new dep
 #Version 4.4.0 marked transition from bash > hash install script
 #Version 4.1.0 marked the introduction of h-swap dir in /tmp
 #Version 4.0.0 marked a transition from pre-built packages to H-Linux compiled packages, as h-navigator
 #Version 3.11.0 marked a transition from Brave base > Origin base. Nightly channel remains unchanged
 
-# Create the h-swap dir
+# Create h-swap dir | Create disk null file
 mkdir -p /tmp/h-swap
+touch ~/null/h-navigator.output
 
 echo
 echo "Loading h navigator"
@@ -35,7 +38,7 @@ tput setaf 1; figlet -f banner "H Navigator"; tput sgr0
 echo "With AI, Search Bridge and SEXTANT."
 echo
 ~/.hwm/scripts/h_navigator_version_patch --version
-echo "Version 4.4.0-1, built on Brave Origin (nightly). 🔥 [Patched with Singleton Jailbreak]"
+echo "Version 4.6.2-1, built on Brave Origin (nightly). 🔥 [Patched with Singleton Jailbreak]"
 echo
 echo "Loaded."
 echo "running"
@@ -60,7 +63,10 @@ if ! pgrep -f brave-browser-nightly >/dev/null; then
   rm -fr "$PROFILE_DIR"/Singleton*
 fi
 
-h-navigator --user-data-dir="$HOME/.config/BraveSoftware/Brave-Browser" --proxy-server="192.168.1.69:800" &>/dev/null &
+# Pre-exec font cache alignment
+fc-cache 2>/dev/null
+
+h-navigator --user-data-dir="$HOME/.config/BraveSoftware/Brave-Browser" --proxy-server="192.168.1.69:800" &>~/null/h-navigator.output &
 LAUNCHER_PID=$!
 
 # Wait loop
@@ -98,8 +104,8 @@ echo "Monitoring H Navigator PID: $BRAVE_PID"
 # Launch Sextant core monitor in a new terminal window
 SEXTANT_PATH="$(realpath "$(dirname "$0")/sextant.sh")"
 if [[ -x "$SEXTANT_PATH" ]]; then
-  if command -v cherry-terminal &>/dev/null; then
-    cherry-terminal --title "⚓ SEXTANT — Core monitor for H Navigator | Blackbox-hwm" -e bash "$SEXTANT_PATH" --monitor "$BRAVE_PID" 1 "H Navigator" &>/dev/null &
+  if command -v cherry-terminal &>~/null/h-navigator.output; then
+    cherry-terminal --title "⚓ SEXTANT — Core monitor for H Navigator | Blackbox-hwm" -e bash "$SEXTANT_PATH" --monitor "$BRAVE_PID" 1 "H Navigator" &>~/null/h-navigator.output &
   elif command -v xterm &>/dev/null; then
     xterm -e bash "$SEXTANT_PATH" --monitor "$BRAVE_PID" 1 "H Navigator" &>/dev/null &
   elif command -v gnome-terminal &>/dev/null; then
@@ -116,14 +122,14 @@ fi
     # Search for all windows belonging to the master Brave PID
     WIDS=$(xdotool search --pid "$BRAVE_PID" 2>/dev/null)
     for WID in $WIDS; do
-      xdotool set_window --name "H Navigator. Version 4.4.0-1, built on Brave Origin (nightly). [Patched with Singleton Jailbreak]" "$WID"
+      xdotool set_window --name "H Navigator. Version 4.6.2-1, built on Brave Origin (nightly). [Patched with Singleton Jailbreak]" "$WID"
     done
     sleep 2
   done ) &
 
 # Above works and can still be used if this fails
 #while xdotool getwindowname "$WINDOW_ID" >/dev/null 2>&1; do
-#    xdotool set_window --name "H Navigator. Version 4.4.0-1, built on Brave Origin (nightly). [Patched with Singleton Jailbreak]"
+#    xdotool set_window --name "H Navigator. Version 4.6.2-1, built on Brave Origin (nightly). [Patched with Singleton Jailbreak]"
 #    sleep 2
 #done
 
@@ -136,7 +142,9 @@ echo "H Navigator is running."
 echo ""
 echo "------------------------------------------------------------"
 echo "                  Warnings and Errors Log!                  "
-echo "Note: Warnings are not errors and can be safely ignored.    "
+echo ""
+echo "Note: The 'BadWindow' output is the backend detection       "
+echo "      service doing its job. Not an error!                  "
 echo "------------------------------------------------------------"
 echo ""
 
