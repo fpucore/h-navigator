@@ -2,7 +2,7 @@
 source /usr/local/lib/h-linux-env.hash
 
 # -----------------------------------------------------------------------------
-# H Navigator Installer - Version 4.4.0-1
+# H Navigator Installer - Version 5.0.0-8
 # Copyright (c) 2026 Harmonious Platform Systems
 # https://www.freedompublishersunion.net/h-linux.html
 #
@@ -13,10 +13,69 @@ source /usr/local/lib/h-linux-env.hash
 
 # Installation script for H Navigator
 
+# -----------------------------------------------------------------------------
+# Air-Gapped Integrity Check & Cache Management
+# -----------------------------------------------------------------------------
+export SRCDEST="/tex"
+
+DEB_NAME="brave-browser-nightly_1.96.29_amd64.deb"
+DEB_PATH="$SRCDEST/$DEB_NAME"
+DSIGNED_NAME="${DEB_NAME}.dsigned"
+DSIGNED_PATH="$SRCDEST/$DSIGNED_NAME"
+HASH_PATH="$SRCDEST/${DSIGNED_NAME}.sha512"
+
+echo -e "\033[1;36m[i] Checking package cache integrity in /tex...\033[0m"
+
+# Pre-Flight: Validate .dsigned source of truth and provision build file
+if [ -f "$DSIGNED_PATH" ]; then
+    echo -e "\033[1;33m[i] Found existing .dsigned package. Validating SHA-512 hash...\033[0m"
+    if [ -f "$HASH_PATH" ] && cd "$SRCDEST" && sha512sum -c "$HASH_PATH" --status 2>/dev/null; then
+        echo -e "\033[1;32m✔️  Source of truth verified. Provisioning package for build.\033[0m"
+        cp -f "$DSIGNED_PATH" "$DEB_PATH"
+        cd - > /dev/null
+    else
+        echo -e "\033[1;31m⚠️  WARNING: Source of truth missing or tampered! Purging corrupted files...\033[0m"
+        rm -f "$DEB_PATH" "$DSIGNED_PATH" "$HASH_PATH"
+        cd - > /dev/null
+    fi
+else
+    echo -e "\033[1;34m[i] No existing secure cache found. Proceeding to initial download phase...\033[0m"
+fi
+# -----------------------------------------------------------------------------
+
 # Build package with -i argument removed. Install handled seperately by NLP
 makepkg -fC || { echo "Build failed. Aborting."; exit 1; }
 #-f - force build
 #-C = clean build
+
+# -----------------------------------------------------------------------------
+# Post-Flight: Process new downloads into the .dsigned source of truth
+# -----------------------------------------------------------------------------
+if [ ! -f "$DSIGNED_PATH" ] && [ -f "$DEB_PATH" ]; then
+    echo "Processing new download into secure .dsigned source of truth..."
+    cd "$SRCDEST"
+    
+    # 1. Hash original .deb
+    HASH1=$(sha512sum "$DEB_NAME" | awk '{print $1}')
+    
+    # 2. Duplicate to .dsigned
+    cp -f "$DEB_NAME" "$DSIGNED_NAME"
+    
+    # 3. Hash .dsigned
+    HASH2=$(sha512sum "$DSIGNED_NAME" | awk '{print $1}')
+    
+    # 4. Compare hashes
+    if [ "$HASH1" = "$HASH2" ]; then
+        echo -e "\033[1;32m✔️  Duplication verified. Hashes match perfectly.\033[0m"
+        echo "$HASH2  $DSIGNED_NAME" > "$HASH_PATH"
+    else
+        echo -e "\033[1;31m✖ ERROR: Hash mismatch during duplication! Possible I/O fault.\033[0m"
+        rm -f "$DEB_NAME" "$DSIGNED_NAME" "$HASH_PATH"
+        exit 1
+    fi
+    cd - > /dev/null
+fi
+# -----------------------------------------------------------------------------
 
 # Install package with NLP
 nlp -U *.zst
@@ -33,20 +92,50 @@ echo
 
 # Clean up installation archives
 echo "Cleaning up my mess..."
-rm *.deb *.zst
+rm -f *.deb *.zst
 rm -fr src/
 rm -fr pkg/
 echo "Phew... that's done."
 echo
 
+# Compile+install C pulse component
+echo -e "\033[1;36m[GCC]\033[0m Compiling C pulse monitor..."
+ccache gcc components/src/pulse.c -o components/pulse || { echo "Failed to compile pulse. Aborting."; exit 1; }
+
+echo "Installing pulse binary to /usr/bin..."
+elevate cp -f components/pulse /usr/bin/pulse
+elevate chmod +x /usr/bin/pulse
+
+# Clean up local bin
+rm -f  components/pulse
+echo "Pulse binary installed."
+echo
+
+# Compile+install C profile interpreter
+echo -e "\033[1;36m[CLANG]\033[0m Compiling C profile interpreter..."
+ccache clang components/src/h_profile.c -o components/h-profile || { echo "Failed to compile h-profile. Aborting."; exit 1; }
+
+echo "Installing h-profile binary to /usr/bin..."
+elevate cp -f components/h-profile /usr/bin/h-profile
+elevate chmod +x /usr/bin/h-profile
+
+# Clean up local bin
+rm -f components/h-profile
+echo "Profile interpreter installed."
+echo
+
 # Install additional components for Blackbox-hwm integration
 echo "Installing additional system components..."
-  # If these two dirs are not created already you are doing something wrong
+   # If these two dirs are not created already you are doing something wrong
 mkdir -p $HOME/.hwm
 mkdir -p $HOME/.hwm/scripts
 cp -f components/h_navigator* $HOME/.hwm/scripts
 cp -f components/sextant* $HOME/.hwm/scripts
-  # Can be executed by pointing H Core to *exec, but symlinked for compatibility
+
+# Ensure func is executable
+chmod +x $HOME/.hwm/scripts/h_navigator_profile
+
+   # Can be executed by pointing H Core to *exec, but symlinked for compatibility
 ln -s -f $HOME/.hwm/scripts/h_navigator_exec $HOME/.hwm/scripts/h_navigator
 cp -f assets/w3c.png $HOME/Pictures/w3c.png
 echo "Additional components installed."

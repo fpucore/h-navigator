@@ -1,0 +1,301 @@
+#!/bin/hash
+source /usr/local/lib/h-linux-env.hash
+
+# -----------------------------------------------------------------------------
+# H Navigator Profile Interpreter
+#
+# Copyright (c) 2026 Harmonious Platform Systems
+# https://www.freedompublishersunion.net/h-linux.html
+# -----------------------------------------------------------------------------
+
+VERSION="1.0.0"
+
+PROFILE_BASE="$HOME/.config/BraveSoftware/Brave-Browser"
+BACKUP_DIR="$HOME/.hwm/profile_backups"
+ACTIVE_PROFILE="Default"
+
+mkdir -p "$BACKUP_DIR"
+
+# ANSI Colors (H-Linux Theme)
+RED='\033[1;31m'
+YELLOW='\033[1;33m'
+GREEN='\033[1;32m'
+GRAY='\033[1;90m'
+WHITE='\033[1;37m'
+NC='\033[0m' # No Color
+
+# Helper: Print Banner
+banner() {
+    echo -e "${WHITE}============================================================${NC}"
+    echo -e "${RED}              H Navigator — Profile Interpreter               ${NC}"
+    echo -e "${RED}                           v$VERSION                          ${NC}"
+    echo -e "${WHITE}============================================================${NC}\n"
+}
+
+# 1. List Available Profiles
+cmd_list() {
+    echo -e "${WHITE}Available Profiles:${NC}"
+    if [ -d "$PROFILE_BASE" ]; then
+        for d in "$PROFILE_BASE"/*; do
+            if [ -d "$d" ] && { [ -f "$d/Preferences" ] || [ "$(basename "$d")" = "Default" ]; }; then
+                pname=$(basename "$d")
+                if [ "$pname" = "$ACTIVE_PROFILE" ]; then
+                    echo -e "  ${RED}* $pname (Active)${NC}"
+                else
+                    echo -e "    ${GRAY}$pname${NC}"
+                fi
+            fi
+        done
+    else
+        echo -e "${RED}Error: Profile base directory not found at $PROFILE_BASE${NC}"
+    fi
+}
+
+# 2. Show Current Target + Path
+cmd_info() {
+    local target="$PROFILE_BASE/$ACTIVE_PROFILE"
+    echo -e "${WHITE}Target Profile:${NC} ${RED}$ACTIVE_PROFILE${NC}"
+    echo -e "${WHITE}Absolute Path :${NC} ${GRAY}$target${NC}"
+    if [ -d "$target" ]; then
+        echo -e "${WHITE}Exists        :${NC} ${RED}Yes${NC}"
+    else
+        echo -e "${WHITE}Exists        :${NC} ${RED}No (Directory missing)${NC}"
+    fi
+}
+
+# 3. Size + Storage Breakdown
+cmd_size() {
+    local target="$PROFILE_BASE/$ACTIVE_PROFILE"
+    if [ ! -d "$target" ]; then
+        echo -e "${RED}Target profile '$ACTIVE_PROFILE' does not exist.${NC}"
+        return 1
+    fi
+    echo -e "${WHITE}Calculating storage footprint for [${RED}$ACTIVE_PROFILE${WHITE}]...${NC}"
+    
+    # Keep quick total size calculation at top
+    local total_size=$(du -sh "$target" 2>/dev/null | awk '{print $1}')
+    echo -e "${WHITE}Total Profile Size:${NC} ${RED}$total_size${NC}"
+    
+    echo -e "\n${RED}Subdirectory Breakdown:${NC}"
+    
+    # Exec 'foldersize' for the graphical tree, with a fallback to 'du'
+    if command -v foldersize >/dev/null 2>&1; then
+        foldersize "$target"
+    else
+        echo -e "${RED}Warning: 'foldersize' binary not found in PATH.${NC}"
+        echo -e "${GRAY}Falling back to standard output...${NC}"
+        du -h --max-depth=1 "$target" 2>/dev/null | sort -hr | head -n 10
+    fi
+}
+
+# 4. Deep Integrity Check (SQLite + JSON)
+cmd_integrity() {
+    local target="$PROFILE_BASE/$ACTIVE_PROFILE"
+    if [ ! -d "$target" ]; then
+        echo -e "${RED}Target profile '$ACTIVE_PROFILE' does not exist.${NC}"
+        return 1
+    fi
+
+    echo -e "${WHITE}Running Deep Integrity Audit on [${RED}$ACTIVE_PROFILE${WHITE}]...${NC}\n"
+
+    # A. Check Singleton Locks
+    echo -n -e "  ➔ ${WHITE}Checking Singleton locks... ${NC}"
+    if [ -e "$PROFILE_BASE/SingletonLock" ] || [ -e "$PROFILE_BASE/SingletonCookie" ] || [ -e "$PROFILE_BASE/SingletonSocket" ]; then
+        echo -e "${RED}ACTIVE LOCKS DETECTED (Browser may be running)${NC}"
+    else
+        echo -e "${GREEN}CLEAN (No stale locks)${NC}"
+    fi
+
+    # B. Validate Preferences JSON
+    echo -n -e "  ➔ ${WHITE}Validating Preferences JSON... ${NC}"
+    if [ -f "$target/Preferences" ]; then
+        if command -v jq >/dev/null 2>&1; then
+            if jq . "$target/Preferences" >/dev/null 2>&1; then
+                echo -e "${GREEN}VALID${NC}"
+            else
+                echo -e "${RED}CORRUPTED JSON${NC}"
+            fi
+        else
+            echo -e "${GRAY}SKIPPED (jq not installed)${NC}"
+        fi
+    else
+        echo -e "${RED}NOT FOUND${NC}"
+    fi
+
+    # C. Validate SQLite Databases
+    echo -e "\n  ${WHITE}Testing SQLite Database Health:${NC}"
+    local dbs=("History" "Cookies" "Web Data" "Login Data" "Favicons" "Shortcuts")
+    for db in "${dbs[@]}"; do
+        local db_path="$target/$db"
+        if [ -f "$db_path" ]; then
+            if command -v sqlite3 >/dev/null 2>&1; then
+                local res=$(sqlite3 "$db_path" "PRAGMA integrity_check;" 2>/dev/null)
+                if [ "$res" = "ok" ]; then
+                    echo -e "    ${WHITE}✔  ${db}:${NC} ${GREEN}OK${NC}"
+                else
+                    echo -e "    ${RED}✖  ${db}:${NC} ${RED}CORRUPTED (${res})${NC}"
+                fi
+            else
+                echo -e "    ${GRAY}⚠  ${db}: FOUND (sqlite3 missing)${NC}"
+            fi
+        fi
+    done
+    echo ""
+}
+
+# 5. Backup Profile
+cmd_backup() {
+    local target="$PROFILE_BASE/$ACTIVE_PROFILE"
+    if [ ! -d "$target" ]; then
+        echo -e "${RED}Target profile '$ACTIVE_PROFILE' does not exist.${NC}"
+        return 1
+    fi
+
+    local timestamp=$(date +%Y%m%d_%H%M%S)
+    local archive="$BACKUP_DIR/${ACTIVE_PROFILE}_backup_${timestamp}.tar.zst"
+
+    echo -e "${WHITE}Creating snapshot of [${RED}$ACTIVE_PROFILE${WHITE}]...${NC}"
+    
+    # Try zstd first, fallback to gzip
+    if command -v zstd >/dev/null 2>&1; then
+        tar -C "$PROFILE_BASE" -cf - "$ACTIVE_PROFILE" | zstd -T0 -3 > "$archive"
+    else
+        archive="$BACKUP_DIR/${ACTIVE_PROFILE}_backup_${timestamp}.tar.gz"
+        tar -C "$PROFILE_BASE" -czf "$archive" "$ACTIVE_PROFILE"
+    fi
+
+    if [ $? -eq 0 ]; then
+        echo -e "${WHITE}Backup successfully created:${NC} ${GRAY}$archive${NC}"
+        echo -e "${WHITE}Size:${NC} ${RED}$(du -sh "$archive" | awk '{print $1}')${NC}"
+    else
+        echo -e "${RED}Backup creation failed!${NC}"
+    fi
+}
+
+# 6. Restore Profile
+cmd_restore() {
+    echo -e "${WHITE}Available Snapshots in ${GRAY}$BACKUP_DIR${WHITE}:${NC}"
+    local backups=($(ls "$BACKUP_DIR"/*backup* 2>/dev/null))
+    if [ ${#backups[@]} -eq 0 ]; then
+        echo -e "${RED}No backups found.${NC}"
+        return 1
+    fi
+
+    for i in "${!backups[@]}"; do
+        echo -e "  ${WHITE}[$i]${NC} $(basename "${backups[$i]}") (${RED}$(du -sh "${backups[$i]}" | awk '{print $1}')${NC})"
+    done
+
+    echo -en "\n${WHITE}Select backup index to restore [0-$((${#backups[@]}-1))]: ${NC}"
+    read -r idx
+    if ! [[ "$idx" =~ ^[0-9]+$ ]] || [ "$idx" -ge "${#backups[@]}" ]; then
+        echo -e "${RED}Invalid selection.${NC}"
+        return 1
+    fi
+
+    local selected="${backups[$idx]}"
+    echo -e "${WHITE}WARNING: Restoring will overwrite existing profile files for this profile.${NC}"
+    echo -en "${WHITE}Proceed with restore? [y/N]: ${NC}"
+    read -r confirm
+    if [ "$confirm" != "y" ] && [ "$confirm" != "Y" ]; then
+        echo "${RED}Restore aborted.${NC}"
+        return 0
+    fi
+
+    echo -e "${WHITE}Extracting ${GRAY}$selected ${RED}...${NC}"
+    if [[ "$selected" == *.tar.zst ]]; then
+        tar -C "$PROFILE_BASE" --zstd -xf "$selected"
+    else
+        tar -C "$PROFILE_BASE" -xzf "$selected"
+    fi
+
+    if [ $? -eq 0 ]; then
+        echo -e "${WHITE}Profile restored successfully.${NC}"
+    else
+        echo -e "${RED}Restore operation encountered errors.${NC}"
+    fi
+}
+
+# 7. Purge Caches + GPU State
+cmd_clean_cache() {
+    local target="$PROFILE_BASE/$ACTIVE_PROFILE"
+    echo -e "${WHITE}Purging temporary caches for [${RED}$ACTIVE_PROFILE${WHITE}]...${NC}"
+    rm -rf "$target/Cache"/* "$target/Code Cache"/* "$target/GPUCache"/* "$target/Service Worker/CacheStorage"/* 2>/dev/null
+    echo -e "${WHITE}Cache directories emptied.${NC}"
+}
+
+# 8. Switch Active Target Profile
+cmd_use() {
+    if [ -z "$1" ]; then
+        echo -e "${RED}Usage: use <ProfileName>${NC}"
+        return 1
+    fi
+    ACTIVE_PROFILE="$1"
+    echo -e "${WHITE}Target profile switched to:${NC} ${RED}$ACTIVE_PROFILE${NC}"
+}
+
+# Print Help
+cmd_help() {
+    echo -e "${WHITE}Available Prompts:${NC}"
+    echo -e "  ${YELLOW}list${NC}            - List all profiles"
+    echo -e "  ${YELLOW}use <name>${NC}      - Switch target profile (e.g. use Default)"
+    echo -e "  ${YELLOW}info${NC}            - Display current target profile information"
+    echo -e "  ${YELLOW}size${NC}            - Calculate disk size & storage breakdown"
+    echo -e "  ${YELLOW}integrity${NC}       - Run SQLite & JSON integrity checks"
+    echo -e "  ${YELLOW}backup${NC}          - Create a compressed backup snapshot"
+    echo -e "  ${YELLOW}restore${NC}         - Restore a profile from an existing snapshot"
+    echo -e "  ${YELLOW}clean${NC}           - Purge profile cache & GPU cache"
+    echo -e "  ${YELLOW}help${NC}            - Show this help menu"
+    echo -e "  ${YELLOW}exit / quit${NC}     - Exit interpreter"
+}
+
+# Interactive REPL Loop
+interactive_mode() {
+    banner
+    cmd_info
+    echo ""
+    cmd_help
+    echo ""
+
+    while true; do
+        # Standard H-Linux prompt formatting: White text, Red active target
+        echo -en "${WHITE}h-profile [${RED}${ACTIVE_PROFILE}${WHITE}]> ${NC}"
+        read -r line || break
+        
+        # Split command and argument
+        local cmd=$(echo "$line" | awk '{print $1}')
+        local arg=$(echo "$line" | awk '{$1=""; print $0}' | sed 's/^[ \t]*//')
+
+        case "$cmd" in
+            list)       cmd_list ;;
+            use)        cmd_use "$arg" ;;
+            info)       cmd_info ;;
+            size)       cmd_size ;;
+            integrity)  cmd_integrity ;;
+            backup)     cmd_backup ;;
+            restore)    cmd_restore ;;
+            clean)      cmd_clean_cache ;;
+            help)       cmd_help ;;
+            exit|quit)  echo -e "${WHITE}Exiting interpreter.${NC}"; break ;;
+            "")         ;;
+            *)          echo -e "${RED}Unknown command '$cmd'. Type 'help' for available commands.${NC}" ;;
+        esac
+        echo ""
+    done
+}
+
+# Direct CLI Invocation Routing
+if [ $# -eq 0 ]; then
+    interactive_mode
+else
+    case "$1" in
+        list)       cmd_list ;;
+        info)       [ -n "$2" ] && ACTIVE_PROFILE="$2"; cmd_info ;;
+        size)       [ -n "$2" ] && ACTIVE_PROFILE="$2"; cmd_size ;;
+        integrity)  [ -n "$2" ] && ACTIVE_PROFILE="$2"; cmd_integrity ;;
+        backup)     [ -n "$2" ] && ACTIVE_PROFILE="$2"; cmd_backup ;;
+        restore)    cmd_restore ;;
+        clean)      [ -n "$2" ] && ACTIVE_PROFILE="$2"; cmd_clean_cache ;;
+        help|--help|-h) cmd_help ;;
+        *)          echo -e "${RED}Unknown command: $1. Run 'h-profile help' for options.${NC}" ;;
+    esac
+fi
