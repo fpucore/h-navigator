@@ -32,11 +32,11 @@ H Navigator is a highly-modified, privacy-hardened service runtime and web brows
 Ensure the following are installed and available on GNU Operating System / H-Linux for core functionality:
 
 *   `GNU Operating System / H-Linux`
+*   `Hash`
 *   `Human command layer`
 *   `H-Linux env library`
-*   `Hash`
 *   `nullfsvfs-dkms`
-*   `GCC and Clang`
+*   `GCC + Clang`
 *   `ccache`
 
 ---

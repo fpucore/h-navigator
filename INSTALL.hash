@@ -2,7 +2,7 @@
 source /usr/local/lib/h-linux-env.hash
 
 # -----------------------------------------------------------------------------
-# H Navigator Installer - Version 5.0.0-8
+# H Navigator Installer - Version 5.0.0-10
 # Copyright (c) 2026 Harmonious Platform Systems
 # https://www.freedompublishersunion.net/h-linux.html
 #
@@ -18,7 +18,7 @@ source /usr/local/lib/h-linux-env.hash
 # -----------------------------------------------------------------------------
 export SRCDEST="/tex"
 
-DEB_NAME="brave-browser-nightly_1.96.29_amd64.deb"
+DEB_NAME="brave-browser-nightly_1.97.8_amd64.deb"
 DEB_PATH="$SRCDEST/$DEB_NAME"
 DSIGNED_NAME="${DEB_NAME}.dsigned"
 DSIGNED_PATH="$SRCDEST/$DSIGNED_NAME"
