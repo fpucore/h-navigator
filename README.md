@@ -1,3 +1,5 @@
+![H Navigator logo](https://www.qanonsec.com/images/i.php?/upload/2026/09/12/20260912235948-b39150bf-2s.png)
+
 ### H Navigator
 
 H Navigator is a highly-modified, privacy-hardened service runtime and web browser for H-Linux, built on Brave Origin (nightly).
@@ -23,6 +25,7 @@ H Navigator is a highly-modified, privacy-hardened service runtime and web brows
 *   `PKGBUILD`: The configuration for building the `h-navigator` package on H-Linux.
 *   `patch/`: Contains a patched launcher for syntax correction and improved system-level integration.
 *   `components/`: Contains the SEXTANT monitor tool.
+*   `components/src/`: Contains additional components to compile.
 *   `assets/`: Contains additional graphic components.
 
 ---
@@ -48,7 +51,7 @@ Also, ensure the following are installed on GNU Operating System / H-Linux for i
 *   **Logic & UI:** `xdotool`, `zenity`, `openssl`, `coreutils` 
 *   **Branding:** `viu`, `figlet`
 *   **Monitoring:** `procps-ng`
-*   **Terminal consoles:** `cherry-terminal` and `xterm`
+*   **Terminal consoles:** `cherry-terminal+` and `xterm`
 
 ---
 
@@ -59,10 +62,12 @@ To build and install H Navigator and its associated components on H-Linux:
 1. Open **Cherry Terminal+** and navigate to the project directory.
 
 2. Grant execution permissions to the installer:
-   `> chmod +x INSTALL.hash`
+   `> make-executable INSTALL.hash`
 
 3. Execute the installer:
    `> ./INSTALL.hash`
+
+4. Grab a coffee... ☕
 
 ---
 

@@ -1,7 +1,8 @@
-#!/bin/bash
+#!/bin/hash
+source /usr/local/lib/h-linux-env.hash
 
 # -----------------------------------------------------------------------------
-# H Navigator - Version 5.0.0-10
+# H Navigator - Version 5.0.1-1
 # Copyright (c) 2026 Harmonious Platform Systems
 # https://www.freedompublishersunion.net/h-linux.html
 #
@@ -10,10 +11,13 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 # -----------------------------------------------------------------------------
 
-#h navigator script for blackbox-hwm, Script version 17.0
+#h navigator script for blackbox-hwm, Script version 18.0
 
 # CHANGELOG NOTABLES
 #
+# Version 5.0.1 added built-in FFmpeg/H.264 embedded codecs check
+    # h-swap migrated to /tex
+    # pulse migrated away from /tmp > h-swap + /tex
 # Version 5.0.0 marked the introduction of "Gobble Chain" blockchain support for ssl entropy pooling
     # enabled /tex for tmp extended support
     # marked introduction of pulse monitor with killswitch
@@ -50,7 +54,7 @@ cleanup() {
 
     # 4. Standard lock and swap cleanup
     rm -fr "$HOME/.config/BraveSoftware/Brave-Browser/Singleton*"
-    rm -fr /tmp/h-swap 2>/dev/null
+    rm -fr /tex/h-swap 2>/dev/null
 
     echo "[*] Teardown complete. Exiting."
     exit 0
@@ -59,14 +63,15 @@ cleanup() {
 trap cleanup EXIT INT TERM
 
 # Create h-swap dir | Create disk null file
-mkdir -p /tmp/h-swap
+mkdir -p /tex/h-swap
 touch $HOME/null/h-navigator.output
 
 echo
 echo "Loading h navigator"
 echo
 
-viu --height 14 --width 26 "$HOME/Pictures/h-navigator-logo.png"
+#viu --height 14 --width 26 "$HOME/Pictures/h-navigator-logo.png"    # non-transparent png
+viu --height 14 --width 26 "$HOME/Pictures/h-navigator-logo-transparent_128px.png"    #transparent png, looks more sexy!
 echo ""
 
 printf '\033[1;31m'
@@ -77,15 +82,15 @@ echo "With AI, Search Bridge and SEXTANT."
 echo "⛓️ Secured by Gobble Chain v2 Cryptographic Entropy."
 echo
 $HOME/.hwm/scripts/h_navigator_version_patch --version
-echo "Version 5.0.0-10, built on Brave Origin (nightly). 🔥 [Patched with Singleton Jailbreak]"
+echo "Version 5.0.1-1, built on Brave Origin (nightly). 🔥 [Patched with Singleton Jailbreak]"
 echo
 echo "Loaded."
 echo "running"
 echo
 
-mkdir -p /tmp/h-swap
-cp -f $HOME/Pictures/w3c.png /tmp/h-swap
-zenity --notification --text="H Navigator\nWith AI, Search Bridge and SEXTANT." --timeout=5 --icon='/tmp/h-swap/w3c.png' &>/dev/null
+mkdir -p /tex/h-swap
+cp -f $HOME/Pictures/w3c.png /tex/h-swap
+zenity --notification --text="H Navigator\nWith AI, Search Bridge and SEXTANT." --timeout=5 --icon='/tex/h-swap/w3c.png' &>/dev/null
 
 #defs
 ENTROPY_POOL="$HOME/Desktop/gobble-chain/gobble_chain_v2"
@@ -141,6 +146,14 @@ printf '\033[0m'
 echo "🔒 All session keys secured."
 echo
 
+say -n "[*] Verifying embedded FFmpeg/H.264 codecs... "
+if grep -qa "CWelsH264SVCEncoder" /opt/hlinux/brave-nightly/brave 2>/dev/null; then
+    say "✔️  READY"
+else
+    say "❌  NOT FOUND"
+fi
+
+
 # And now the opening Jailbreak
 PROFILE_DIR="$HOME/.config/BraveSoftware/Brave-Browser"
 
@@ -164,8 +177,8 @@ sleep 0.5
 (
     while true; do
         # Only pulse if the FIFO pipe still exists
-        if [ -p /tmp/h_navigator_pulse ]; then
-            echo "1" > /tmp/h_navigator_pulse
+        if [ -p /tex/h-swap/h_navigator_pulse ]; then
+            echo "1" > /tex/h-swap/h_navigator_pulse
         else
             break
         fi
@@ -173,6 +186,7 @@ sleep 0.5
     done
 ) &
 PULSE_PID=$!
+
 
 h-navigator --user-data-dir="$HOME/.config/BraveSoftware/Brave-Browser" --proxy-server="192.168.1.69:800" &>~/null/h-navigator.output &
 LAUNCHER_PID=$!
@@ -230,7 +244,7 @@ fi
     # Search for all windows belonging to the master Brave PID
     WIDS=$(xdotool search --pid "$BRAVE_PID" 2>/dev/null)
     for WID in $WIDS; do
-	xdotool set_window --name "H Navigator. Version 5.0.0-10, built on Brave Origin (nightly). [Patched with Singleton Jailbreak]" "$WID"
+	xdotool set_window --name "H Navigator. Version 5.0.1-1, built on Brave Origin (nightly). [Patched with Singleton Jailbreak]" "$WID"
     done
     sleep 2
   done ) &
@@ -266,7 +280,7 @@ rm -fr "$PROFILE_DIR"/Singleton*
 sleep 2
 
 # Clean up h-swap dir
-rm -fr /tmp/h-swap
+rm -fr /tex/h-swap
 
 echo
 

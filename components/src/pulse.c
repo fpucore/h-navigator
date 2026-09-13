@@ -7,7 +7,7 @@
 #include <signal.h>
 #include <poll.h>
 
-#define FIFO_PATH "/tmp/h_navigator_pulse"
+#define FIFO_PATH "/tex/h-swap/h_navigator_pulse"
 #define TIMEOUT_MS 15000 // 15secs before declaring flatline
 #define KEY_DIR "/tmp/1V/sys/ctrl/strgctrl0/strgpri0/vfunit0-drive_C/"
 

@@ -2,7 +2,7 @@
 source /usr/local/lib/h-linux-env.hash
 
 # -----------------------------------------------------------------------------
-# H Navigator Installer - Version 5.0.0-10
+# H Navigator Installer - Version 5.0.1-1
 # Copyright (c) 2026 Harmonious Platform Systems
 # https://www.freedompublishersunion.net/h-linux.html
 #
@@ -18,7 +18,9 @@ source /usr/local/lib/h-linux-env.hash
 # -----------------------------------------------------------------------------
 export SRCDEST="/tex"
 
-DEB_NAME="brave-browser-nightly_1.97.8_amd64.deb"
+LOGO_SOURCE="assets/h-navigator-logo-transparent_128px.png"
+LOGO_TARGET="$HOME/Pictures"
+DEB_NAME="brave-browser-nightly_1.97.29_amd64.deb"
 DEB_PATH="$SRCDEST/$DEB_NAME"
 DSIGNED_NAME="${DEB_NAME}.dsigned"
 DSIGNED_PATH="$SRCDEST/$DSIGNED_NAME"
@@ -131,6 +133,7 @@ mkdir -p $HOME/.hwm
 mkdir -p $HOME/.hwm/scripts
 cp -f components/h_navigator* $HOME/.hwm/scripts
 cp -f components/sextant* $HOME/.hwm/scripts
+cp $LOGO_SOURCE $LOGO_TARGET
 
 # Ensure func is executable
 chmod +x $HOME/.hwm/scripts/h_navigator_profile
