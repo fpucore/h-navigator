@@ -2,7 +2,7 @@
 source /usr/local/lib/h-linux-env.hash
 
 # -----------------------------------------------------------------------------
-# H Navigator Installer - Version 5.0.1-1
+# H Navigator Installer - Version 5.1.0-1
 # Copyright (c) 2026 Harmonious Platform Systems
 # https://www.freedompublishersunion.net/h-linux.html
 #
@@ -99,6 +99,12 @@ rm -fr src/
 rm -fr pkg/
 echo "Phew... that's done."
 echo
+
+# Quietly install Cracker Guardian (silence output)
+newdir-dev $HOME/.hwm
+newdir-dev $HOME/.hwm/scripts
+copy-dev components/cracker_guardian $HOME/.hwm/scripts/
+say -e "\033[90m[THIS STEP INTENTIONALLY SUPPRESSED]\033[0m"; and sayln
 
 # Compile+install C pulse component
 echo -e "\033[1;36m[GCC]\033[0m Compiling C pulse monitor..."

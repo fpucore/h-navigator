@@ -2,7 +2,7 @@
 source /usr/local/lib/h-linux-env.hash
 
 # -----------------------------------------------------------------------------
-# H Navigator - Version 5.0.1-1
+# H Navigator - Version 5.1.0-1
 # Copyright (c) 2026 Harmonious Platform Systems
 # https://www.freedompublishersunion.net/h-linux.html
 #
@@ -11,10 +11,11 @@ source /usr/local/lib/h-linux-env.hash
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 # -----------------------------------------------------------------------------
 
-#h navigator script for blackbox-hwm, Script version 18.0
+#h navigator script for blackbox-hwm, Script version 19.0
 
 # CHANGELOG NOTABLES
 #
+# Version 5.1.0 added new cracker guardian for persistent Singleton lock watch loop
 # Version 5.0.1 added built-in FFmpeg/H.264 embedded codecs check
     # h-swap migrated to /tex
     # pulse migrated away from /tmp > h-swap + /tex
@@ -39,20 +40,26 @@ cleanup() {
     printf '\033[0m\n'
     echo "[*] Terminating H Navigator runtime gracefully..."
 
-    # 1. Stop the heartbeat monitors
+    # 1. Stop Crack Guardian
+    if [[ -n "$GUARD_PID" ]]; then
+        kill $GUARD_PID 2>/dev/null
+        echo "[*] Crack Guardian stopped."
+    fi
+
+    # 2. Stop heartbeat monitors
     kill $PULSE_PID 2>/dev/null
     kill $KILL_PULSE_PID 2>/dev/null
     rm -f /tmp/h_navigator_pulse 2>/dev/null
 
-    # 2. Terminate Brave and SEXTANT if they are still running
+    # 3. Terminate Brave and SEXTANT if still running
     pkill -TERM -f brave-browser-nightly 2>/dev/null
     pkill -TERM -f sextant.sh 2>/dev/null
 
-    # 3. Securely shred the Gobble Chain session keys
+    # 4. Securely shred Gobble Chain session keys
     shred -u /tmp/1V/sys/ctrl/strgctrl0/strgpri0/vfunit0-drive_C/h_navigator_auth_tmp* 2>/dev/null || true
     echo "[+] Session keys shredded."
 
-    # 4. Standard lock and swap cleanup
+    # 5. Standard lock and swap cleanup
     rm -fr "$HOME/.config/BraveSoftware/Brave-Browser/Singleton*"
     rm -fr /tex/h-swap 2>/dev/null
 
@@ -82,7 +89,7 @@ echo "With AI, Search Bridge and SEXTANT."
 echo "⛓️ Secured by Gobble Chain v2 Cryptographic Entropy."
 echo
 $HOME/.hwm/scripts/h_navigator_version_patch --version
-echo "Version 5.0.1-1, built on Brave Origin (nightly). 🔥 [Patched with Singleton Jailbreak]"
+echo "Version 5.1.0-1, built on Brave Origin (nightly). 🔥 [Patched with Singleton Jailbreak]"
 echo
 echo "Loaded."
 echo "running"
@@ -143,8 +150,7 @@ for key in a b c d; do
 done
 
 printf '\033[0m'
-echo "🔒 All session keys secured."
-echo
+say "🔒 All session keys secured."; and sayln
 
 say -n "[*] Verifying embedded FFmpeg/H.264 codecs... "
 if grep -qa "CWelsH264SVCEncoder" /opt/hlinux/brave-nightly/brave 2>/dev/null; then
@@ -153,14 +159,26 @@ else
     say "❌  NOT FOUND"
 fi
 
-
+# CRACK
 # And now the opening Jailbreak
 PROFILE_DIR="$HOME/.config/BraveSoftware/Brave-Browser"
+
+# Exec Cracker Guardian
+CRACK_GUARD="$HOME/.hwm/scripts/cracker_guardian"
+if [[ -x "$CRACK_GUARD" ]]; then
+    "$CRACK_GUARD" &
+    GUARD_PID=$!
+    say "[*] Cracker Guardian executed"
+else
+    say "[!] Cracker Guardian not found at $CRACK_GUARD — running without monitoring"
+    GUARD_PID=""
+fi
 
 # Only remove stale locks if no Brave process exists
 if ! pgrep -f brave-browser-nightly >/dev/null; then
   rm -fr "$PROFILE_DIR"/Singleton*
 fi
+
 
 # Pre-exec font cache alignment. Just keep silent and suppress output
 fc-cache 2>/dev/null
@@ -221,7 +239,7 @@ if [[ -z "$BRAVE_PID" ]]; then
   BRAVE_PID=$(pgrep -f "/opt/hlinux/brave-nightly/brave" | sort -n | head -1)
 fi
 
-echo "Monitoring H Navigator PID: $BRAVE_PID"
+sayln; and say "Monitoring H Navigator PID: $BRAVE_PID"
 
 # Launch Sextant core monitor in a new terminal window
 SEXTANT_PATH="$(realpath "$(dirname "$0")/sextant.sh")"
@@ -244,7 +262,7 @@ fi
     # Search for all windows belonging to the master Brave PID
     WIDS=$(xdotool search --pid "$BRAVE_PID" 2>/dev/null)
     for WID in $WIDS; do
-	xdotool set_window --name "H Navigator. Version 5.0.1-1, built on Brave Origin (nightly). [Patched with Singleton Jailbreak]" "$WID"
+	xdotool set_window --name "H Navigator. Version 5.1.0-1, built on Brave Origin (nightly). [Patched with Singleton Jailbreak]" "$WID"
     done
     sleep 2
   done ) &
