@@ -2,7 +2,7 @@
 source /usr/local/lib/h-linux-env.hash
 
 # -----------------------------------------------------------------------------
-# H Navigator - Version 5.1.0-1
+# H Navigator - Version 5.1.1-1
 # Copyright (c) 2026 Harmonious Platform Systems
 # https://www.freedompublishersunion.net/h-linux.html
 #
@@ -11,7 +11,7 @@ source /usr/local/lib/h-linux-env.hash
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 # -----------------------------------------------------------------------------
 
-#h navigator script for blackbox-hwm, Script version 19.0
+#h navigator script for blackbox-hwm, Script version 19.1
 
 # CHANGELOG NOTABLES
 #
@@ -89,7 +89,7 @@ echo "With AI, Search Bridge and SEXTANT."
 echo "⛓️ Secured by Gobble Chain v2 Cryptographic Entropy."
 echo
 $HOME/.hwm/scripts/h_navigator_version_patch --version
-echo "Version 5.1.0-1, built on Brave Origin (nightly). 🔥 [Patched with Singleton Jailbreak]"
+echo "Version 5.1.1-1, built on Brave Origin (nightly). 🔥 [Patched with Singleton Jailbreak]"
 echo
 echo "Loaded."
 echo "running"
@@ -168,7 +168,7 @@ CRACK_GUARD="$HOME/.hwm/scripts/cracker_guardian"
 if [[ -x "$CRACK_GUARD" ]]; then
     "$CRACK_GUARD" &
     GUARD_PID=$!
-    say "[*] Cracker Guardian executed"
+    say "[*] 😈 Cracker Guardian executed"
 else
     say "[!] Cracker Guardian not found at $CRACK_GUARD — running without monitoring"
     GUARD_PID=""
@@ -262,7 +262,7 @@ fi
     # Search for all windows belonging to the master Brave PID
     WIDS=$(xdotool search --pid "$BRAVE_PID" 2>/dev/null)
     for WID in $WIDS; do
-	xdotool set_window --name "H Navigator. Version 5.1.0-1, built on Brave Origin (nightly). [Patched with Singleton Jailbreak]" "$WID"
+	xdotool set_window --name "H Navigator. Version 5.1.1-1, built on Brave Origin (nightly). [Patched with Singleton Jailbreak]" "$WID"
     done
     sleep 2
   done ) &

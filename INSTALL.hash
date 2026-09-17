@@ -2,7 +2,7 @@
 source /usr/local/lib/h-linux-env.hash
 
 # -----------------------------------------------------------------------------
-# H Navigator Installer - Version 5.1.0-1
+# H Navigator Installer - Version 5.1.1-1
 # Copyright (c) 2026 Harmonious Platform Systems
 # https://www.freedompublishersunion.net/h-linux.html
 #
@@ -20,7 +20,7 @@ export SRCDEST="/tex"
 
 LOGO_SOURCE="assets/h-navigator-logo-transparent_128px.png"
 LOGO_TARGET="$HOME/Pictures"
-DEB_NAME="brave-browser-nightly_1.97.29_amd64.deb"
+DEB_NAME="brave-browser-nightly_1.98.7_amd64.deb"
 DEB_PATH="$SRCDEST/$DEB_NAME"
 DSIGNED_NAME="${DEB_NAME}.dsigned"
 DSIGNED_PATH="$SRCDEST/$DSIGNED_NAME"
@@ -46,8 +46,9 @@ fi
 # -----------------------------------------------------------------------------
 
 # Build package with -i argument removed. Install handled seperately by NLP
-makepkg -fC || { echo "Build failed. Aborting."; exit 1; }
-#-f - force build
+makepkg -sfC || { echo "Build failed. Aborting."; exit 1; }
+#-s = dep check
+#-f = force build
 #-C = clean build
 
 # -----------------------------------------------------------------------------

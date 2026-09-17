@@ -3,22 +3,28 @@ source /usr/local/lib/h-linux-env.hash
 
 # Cracker Guardian — Instant Singleton* cracker using inotify
 
-
 PROFILE_DIR="$HOME/.config/BraveSoftware/Brave-Browser"
-LOCK_FILE="/tex/h-swap/cracker_guardian.lock"
+LOCK_DIR="/tex/h-swap/cracker_guardian.lock.d"
 
-# Prevent multiple guardian instances
-if [[ -f "$LOCK_FILE" ]]; then
-    OLD_PID=$(cat "$LOCK_FILE" 2>/dev/null)
+# Atomic lock — create exclusively, fail if exists
+if ! mkdir "$LOCK_DIR" 2>/dev/null; then
+    # Lock exists — check if stale
+    OLD_PID=$(cat "$LOCK_DIR/pid" 2>/dev/null)
     if [[ -n "$OLD_PID" ]] && kill -0 "$OLD_PID" 2>/dev/null; then
         echo "[!] Cracker Guardian already running (PID: $OLD_PID)"
         exit 1
+    else
+        # Stale lock — remove and retry
+        rm -rf "$LOCK_DIR"
+        mkdir "$LOCK_DIR" 2>/dev/null || { echo "[!] Failed to create lock"; exit 1; }
     fi
 fi
-echo $$ > "$LOCK_FILE"
+
+# Write our PID
+echo $$ > "$LOCK_DIR/pid"
 
 # Cleanup lock on exit
-trap 'rm -f "$LOCK_FILE"; exit 0' EXIT INT TERM
+trap 'rm -rf "$LOCK_DIR"; exit 0' EXIT INT TERM
 
 # Verify profile dir exists
 if [[ ! -d "$PROFILE_DIR" ]]; then
@@ -32,7 +38,7 @@ if ! command -v inotifywait >/dev/null 2>&1; then
     exit 1
 fi
 
-echo "[*] Cracker Guardian active (PID: $$)"
+echo "[*] 😈 Cracker Guardian active (PID: $$)"
 
 # Initial sweep — catch anything created before we started
 rm -f "$PROFILE_DIR"/Singleton* 2>/dev/null
@@ -52,7 +58,7 @@ while true; do
                 rm -f "$FILE" 2>/dev/null
                 if [[ $? -eq 0 ]]; then
                     echo "[+] Removed: $BASENAME"
-                        # Notify of successful rm
+                    # Notify of successful rm
                     notify-send --urgency=critical "Cracker Guardian" "Removed: $BASENAME"
                 fi
                 ;;
