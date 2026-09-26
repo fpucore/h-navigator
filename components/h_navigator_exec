@@ -2,7 +2,7 @@
 source /usr/local/lib/h-linux-env.hash
 
 # -----------------------------------------------------------------------------
-# H Navigator - Version 5.1.1-1
+# H Navigator - Version 5.1.2-1
 # Copyright (c) 2026 Harmonious Platform Systems
 # https://www.freedompublishersunion.net/h-linux.html
 #
@@ -15,6 +15,7 @@ source /usr/local/lib/h-linux-env.hash
 
 # CHANGELOG NOTABLES
 #
+# Version 5.1.1 added split pulse monitoring (neck+wrist) components
 # Version 5.1.0 added new cracker guardian for persistent Singleton lock watch loop
 # Version 5.0.1 added built-in FFmpeg/H.264 embedded codecs check
     # h-swap migrated to /tex
@@ -89,7 +90,7 @@ echo "With AI, Search Bridge and SEXTANT."
 echo "⛓️ Secured by Gobble Chain v2 Cryptographic Entropy."
 echo
 $HOME/.hwm/scripts/h_navigator_version_patch --version
-echo "Version 5.1.1-1, built on Brave Origin (nightly). 🔥 [Patched with Singleton Jailbreak]"
+echo "Version 5.1.2-1, built on Brave Origin (nightly). 🔥 [Patched with Singleton Jailbreak]"
 echo
 echo "Loaded."
 echo "running"
@@ -186,7 +187,12 @@ fc-cache 2>/dev/null
 
 # Launch monitors before browser
 # 1. Start the kill_pulse monitor with PGID
-/usr/bin/pulse $PGID &
+    #single pulse array
+#/usr/bin/pulse $PGID &
+
+    #dual-pulse array
+/usr/bin/pulse neck "$PGID" &
+/usr/bin/pulse wrist "$PGID" &
 KILL_PULSE_PID=$!
 
 sleep 0.5
@@ -195,11 +201,14 @@ sleep 0.5
 (
     while true; do
         # Only pulse if the FIFO pipe still exists
-        if [ -p /tex/h-swap/h_navigator_pulse ]; then
-            echo "1" > /tex/h-swap/h_navigator_pulse
-        else
-            break
-        fi
+if [ -p /tex/h-swap/h_navigator_pulse_neck ]; then
+    printf '1' > /tex/h-swap/h_navigator_pulse_neck
+fi
+
+if [ -p /tex/h-swap/h_navigator_pulse_wrist ]; then
+    printf '1' > /tex/h-swap/h_navigator_pulse_wrist
+fi
+
         sleep 2
     done
 ) &
@@ -262,7 +271,7 @@ fi
     # Search for all windows belonging to the master Brave PID
     WIDS=$(xdotool search --pid "$BRAVE_PID" 2>/dev/null)
     for WID in $WIDS; do
-	xdotool set_window --name "H Navigator. Version 5.1.1-1, built on Brave Origin (nightly). [Patched with Singleton Jailbreak]" "$WID"
+	xdotool set_window --name "H Navigator. Version 5.1.2-1, built on Brave Origin (nightly). [Patched with Singleton Jailbreak]" "$WID"
     done
     sleep 2
   done ) &
