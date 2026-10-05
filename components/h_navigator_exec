@@ -2,7 +2,7 @@
 source /usr/local/lib/h-linux-env.hash
 
 # -----------------------------------------------------------------------------
-# H Navigator - Version 5.1.3-1
+# H Navigator - Version 5.1.4-1
 # Copyright (c) 2026 Harmonious Platform Systems
 # https://www.freedompublishersunion.net/h-linux.html
 #
@@ -90,7 +90,7 @@ echo "With AI, Search Bridge and SEXTANT."
 echo "⛓️ Secured by Gobble Chain v2 Cryptographic Entropy."
 echo
 $HOME/.hwm/scripts/h_navigator_version_patch --version
-echo "Version 5.1.3-1, built on Brave Origin (nightly). 🔥 [Patched with Singleton Jailbreak]"
+echo "Version 5.1.4-1, built on Brave Origin (nightly). 🔥 [Patched with Singleton Jailbreak]"
 echo
 echo "Loaded."
 echo "running"
@@ -271,7 +271,7 @@ fi
     # Search for all windows belonging to the master Brave PID
     WIDS=$(xdotool search --pid "$BRAVE_PID" 2>/dev/null)
     for WID in $WIDS; do
-	xdotool set_window --name "H Navigator. Version 5.1.3-1, built on Brave Origin (nightly). [Patched with Singleton Jailbreak]" "$WID"
+	xdotool set_window --name "H Navigator. Version 5.1.4-1, built on Brave Origin (nightly). [Patched with Singleton Jailbreak]" "$WID"
     done
     sleep 2
   done ) &
