@@ -41,6 +41,7 @@ Ensure the following are installed and available on GNU Operating System / H-Lin
 *   `nullfsvfs-dkms`
 *   `GCC + Clang`
 *   `ccache`
+*   `sh2c` (optional)
 
 ---
 
@@ -61,13 +62,10 @@ To build and install H Navigator and its associated components on H-Linux:
 
 1. Open **Cherry Terminal+** and navigate to the project directory.
 
-2. Grant execution permissions to the installer:
-   `> make-executable INSTALL.hash`
+2. Execute the installer:
+   `> $here/INSTALL`
 
-3. Execute the installer:
-   `> ./INSTALL.hash`
-
-4. Grab a coffee... ☕
+3. Grab a coffee... ☕
 
 ---
 
