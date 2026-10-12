@@ -2,7 +2,7 @@
 source /usr/local/lib/h-linux-env.hash
 
 # -----------------------------------------------------------------------------
-# H Navigator - Version 5.2.0-1
+# H Navigator - Version 5.3.0-1
 # Copyright (c) 2026 Harmonious Platform Systems
 # https://www.freedompublishersunion.net/h-linux.html
 #
@@ -11,10 +11,11 @@ source /usr/local/lib/h-linux-env.hash
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 # -----------------------------------------------------------------------------
 
-#h navigator script for blackbox-hwm, Script version 19.1
+#h navigator script for blackbox-hwm, Script version 20.0
 
 # CHANGELOG NOTABLES
 #
+# Version 5.3.0 added new local ssl bypass cracker
 # Version 5.2.0 migrated to new compiled binary installer
 # Version 5.1.1 added split pulse monitoring (neck+wrist) components
 # Version 5.1.0 added new cracker guardian for persistent Singleton lock watch loop
@@ -91,7 +92,7 @@ echo "With AI, Search Bridge and SEXTANT."
 echo "⛓️ Secured by Gobble Chain v2 Cryptographic Entropy."
 echo
 $HOME/.hwm/scripts/h_navigator_version_patch --version
-echo "Version 5.2.0-1, built on Brave Origin (nightly). 🔥 [Patched with Singleton Jailbreak]"
+echo "Version 5.3.0-1, built on Brave Origin (nightly). 🔥 [Patched with Singleton Jailbreak]"
 echo
 echo "Loaded."
 echo "running"
@@ -154,12 +155,17 @@ done
 printf '\033[0m'
 say "🔒 All session keys secured."; and sayln
 
+# Codec check init
 say -n "[*] Verifying embedded FFmpeg/H.264 codecs... "
 if grep -qa "CWelsH264SVCEncoder" /opt/hlinux/brave-nightly/brave 2>/dev/null; then
     say "✔️  READY"
 else
     say "❌  NOT FOUND"
 fi
+
+# CRACK
+# Just tell the user about this soft ssl bypass crack
+say "[+] 💀 'thisisunsafe' local SSL bypass crack is enabled."
 
 # CRACK
 # And now the opening Jailbreak
@@ -216,7 +222,26 @@ fi
 PULSE_PID=$!
 
 
-h-navigator --user-data-dir="$HOME/.config/BraveSoftware/Brave-Browser" --proxy-server="192.168.1.69:800" &>~/null/h-navigator.output &
+# H-RAM cache init
+H_RAM_CACHE="/tex/h-ram-cache"
+
+say "Initializing H-RAM cache (requires user confirmation to mount)"
+newdir-dev "$H_RAM_CACHE"
+mountpoint -q "$H_RAM_CACHE" || \
+    elevate mount -t tmpfs -o size=1G,noatime tmpfs "$H_RAM_CACHE"
+# Use H-RAM with http disk cache backend flag enabled (experimental+sql mode)
+
+
+# stable exec
+#h-navigator --user-data-dir="$HOME/.config/BraveSoftware/Brave-Browser" --proxy-server="192.168.1.69:800" &>~/null/h-navigator.output &
+
+# unstable exec
+h-navigator \
+    --user-data-dir="$HOME/.config/BraveSoftware/Brave-Browser" \
+    --disk-cache-dir="$H_RAM_CACHE" \
+    --proxy-server="192.168.1.69:800" \
+    &>"$HOME/null/h-navigator.output" &
+
 LAUNCHER_PID=$!
 
 # Wait loop
@@ -267,29 +292,40 @@ else
   echo "SEXTANT: sextant.sh not found or not executable at $SEXTANT_PATH — skipping monitor."
 fi
 
-# Keep enforcing the title using the PID we already found
+# Keep enforcing title and ssl bypass crack
 ( while [ -n "$BRAVE_PID" ] && ps -p "$BRAVE_PID" > /dev/null; do
-    # Search for all windows belonging to the master Brave PID
+    # Search all windows belonging to master PID
     WIDS=$(xdotool search --pid "$BRAVE_PID" 2>/dev/null)
     for WID in $WIDS; do
-	xdotool set_window --name "H Navigator. Version 5.2.0-1, built on Brave Origin (nightly). [Patched with Singleton Jailbreak]" "$WID"
+        # Check if currently trapped by SSL fake notice
+        CURRENT_NAME=$(xdotool getwindowname "$WID" 2>/dev/null)
+        if [[ "$CURRENT_NAME" == *"Privacy error"* ]]; then
+            xdotool windowactivate --sync "$WID"
+            sleep 0.5
+            xdotool type "thisisunsafe"
+            # Pause briefly so the page can reload before enforcement exec
+            sleep 2.5
+        fi
+
+        # Apply the Singleton Jailbreak patched title
+        xdotool set_window --name "H Navigator. Version 5.3.0-1, built on Brave Origin (nightly). [Patched with Singleton Jailbreak]" "$WID"
     done
     sleep 2
   done ) &
 
-echo
+sayln
 
-echo "H Navigator is running."
+say "H Navigator is running."
 
 # Verbose output can follow, likely limited
-echo ""
-echo "------------------------------------------------------------"
-echo "                  Warnings and Errors Log!                  "
-echo ""
-echo "Note:  The 'BadWindow' output is the backend detection      "
-echo "       service doing its job. Not an error!                 "
-echo "------------------------------------------------------------"
-echo ""
+sayln
+say "------------------------------------------------------------"
+say "                  Warnings and Errors Log!                  "
+say ""
+say "Note:  The 'BadWindow' output is the backend detection      "
+say "       service doing its job. Not an error!                 "
+say "------------------------------------------------------------"
+sayln
 
 # This will set printed output at dark gray
 printf '\033[90m'

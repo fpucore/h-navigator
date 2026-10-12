@@ -21,7 +21,8 @@ H Navigator is a highly-modified, privacy-hardened service runtime and web brows
 
 #### Structure
 
-*   `INSTALL.hash`: The automated deployment and patching script.
+*   `INSTALL.hash`: The automated deployment and patching script source.
+*   `INSTALL.hash.x.c`: The automated deployment and patching script binary source.
 *   `PKGBUILD`: The configuration for building the `h-navigator` package on H-Linux.
 *   `patch/`: Contains a patched launcher for syntax correction and improved system-level integration.
 *   `components/`: Contains the SEXTANT monitor tool.
