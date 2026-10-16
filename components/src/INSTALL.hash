@@ -2,7 +2,7 @@
 source /usr/local/lib/h-linux-env.hash
 
 # -----------------------------------------------------------------------------
-# H Navigator Installer - Version 5.4.0-1
+# H Navigator Installer - Version 5.5.0-1
 # Copyright (c) 2026 Harmonious Platform Systems
 # https://www.freedompublishersunion.net/h-linux.html
 #
@@ -20,7 +20,7 @@ export SRCDEST="/tex"
 
 LOGO_SOURCE="assets/h-navigator-logo-transparent_128px.png"
 LOGO_TARGET="$HOME/Pictures"
-DEB_NAME="brave-browser-nightly_1.99.43_amd64.deb"
+DEB_NAME="brave-browser-nightly_1.100.5_amd64.deb"
 DEB_PATH="$SRCDEST/$DEB_NAME"
 DSIGNED_NAME="${DEB_NAME}.dsigned"
 DSIGNED_PATH="$SRCDEST/$DSIGNED_NAME"
@@ -46,6 +46,30 @@ fi
 # -----------------------------------------------------------------------------
 
 ./components/net-check
+
+#
+# Only download, extract, inject, and repack if a verified .dsigned cache doesn't exist yet
+if [ ! -f "$DSIGNED_PATH" ]; then
+    # 1. Ensure source archive (.deb) is downloaded into /tex before attempting extraction
+    if [ ! -f "$DEB_PATH" ]; then
+        makepkg --verifysource -f || { echo "Download of source archive failed. Aborting."; exit 1; }
+    fi
+
+    # 2. Extract source archive > Inject > Repack (.deb)
+    echo "Extracting source archive for injection..."
+    DEB_WORK_DIR="$SRCDEST/deb_tmp"
+    rm -rf "$DEB_WORK_DIR"
+
+    dpkg-deb -R "$DEB_PATH" "$DEB_WORK_DIR" || { echo "Extraction of source archive failed. Aborting."; exit 1; }
+
+    # Inject into extracted dir
+    touch "$DEB_WORK_DIR/opt/brave.com/brave-nightly/VALIDATE"
+
+    echo "Repacking the archive..."
+    fakeroot dpkg-deb -Zxz -b "$DEB_WORK_DIR" "$DEB_PATH" || { echo "Repack failed. Aborting."; exit 1; }
+    rm -rf "$DEB_WORK_DIR"
+fi
+#
 
 # Build package with -i argument removed. Install handled seperately by NLP
 makepkg -sfC || { echo "Build failed. Aborting."; exit 1; }

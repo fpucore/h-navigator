@@ -2,13 +2,13 @@
 # Contributor: Greg White <gwhite@kupulau.com>
 
 pkgname=h-navigator
-pkgver=5.4.0
+pkgver=5.5.0
 pkgrel=1
 pkgdesc='A highly-modified, privacy-hardened service runtime and web browser for H-Linux, built on Brave Origin (nightly).'
 arch=(x86_64)
 url='https://www.freedompublishersunion.net/h-linux.html'
 license=('MPL2')
-depends=('x86_64-vendor' 'gcc' 'clang' 'ccache' 'gtk3' 'nss' 'alsa-lib' 'libxss' 'ttf-font' 'bc' 'nullfsvfs-dkms' 'dust')
+depends=('x86_64-vendor' 'gcc' 'clang' 'ccache' 'fakeroot' 'dpkg' 'gtk3' 'nss' 'alsa-lib' 'libxss' 'ttf-font' 'bc' 'nullfsvfs-dkms' 'dust')
 optdepends=('cups: Printer support'
             'mesa: Hardware accelerated rendering'
             'mesa-amber: Alternate hardware accelerated rendering'
@@ -19,7 +19,7 @@ conflicts=('brave-nightly-bin')
 replaces=('brave-nightly-bin')
 source=("$pkgname.sh")
 options=(!strip)
-source_x86_64=("https://github.com/brave/brave-browser/releases/download/v1.99.43/brave-browser-nightly_1.99.43_amd64.deb")
+source_x86_64=("https://github.com/brave/brave-browser/releases/download/v1.100.5/brave-browser-nightly_1.100.5_amd64.deb")
 sha512sums=('SKIP')
 sha512sums_x86_64=('SKIP')
 
@@ -27,7 +27,7 @@ prepare() {
   mkdir -p h-navigator
   tar xf data.tar.xz -C h-navigator
   # Delete unneeded cron job <<< an Arch/CachyOS leftover
-  rm -rf brave/opt/brave.com/brave-nightly/cron
+  rm -rf h-navigator/opt/brave.com/brave-nightly/cron
   # Change Brave > H Navigator .desktop
   mv h-navigator/usr/share/applications/brave-browser-nightly.desktop h-navigator/usr/share/applications/h-navigator.desktop
   # Use our script to launch (allows overriding flags, sets up data dir) <<< an Arch/CachyOS leftover

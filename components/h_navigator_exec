@@ -2,7 +2,7 @@
 source /usr/local/lib/h-linux-env.hash
 
 # -----------------------------------------------------------------------------
-# H Navigator - Version 5.3.0-1
+# H Navigator - Version 5.5.0-1
 # Copyright (c) 2026 Harmonious Platform Systems
 # https://www.freedompublishersunion.net/h-linux.html
 #
@@ -15,6 +15,8 @@ source /usr/local/lib/h-linux-env.hash
 
 # CHANGELOG NOTABLES
 #
+# Version 5.5.0 new installation procedure + new base build
+# Version 5.4.0 revised visual aspects + new base build
 # Version 5.3.0 added new local ssl bypass cracker
 # Version 5.2.0 migrated to new compiled binary installer
 # Version 5.1.1 added split pulse monitoring (neck+wrist) components
@@ -92,7 +94,7 @@ echo "With AI, Search Bridge and SEXTANT."
 echo "⛓️ Secured by Gobble Chain v2 Cryptographic Entropy."
 echo
 $HOME/.hwm/scripts/h_navigator_version_patch --version
-echo "Version 5.3.0-1, built on Brave Origin (nightly). 🔥 [Patched with Singleton Jailbreak]"
+echo "Version 5.5.0-1, built on Brave Origin. 🔥 [Patched with Singleton Jailbreak]"
 echo
 echo "Loaded."
 echo "running"
@@ -163,9 +165,16 @@ else
     say "❌  NOT FOUND"
 fi
 
+# Some ANSI color defs
+CLR_RED='\033[0;31m'         # Red
+CLR_DARK_RED='\033[2;31m'    # Dark Red
+CLR_RESET='\033[0m'          # To reset
+
 # CRACK
 # Just tell the user about this soft ssl bypass crack
+printf "${CLR_RED}"
 say "[+] 💀 'thisisunsafe' local SSL bypass crack is enabled."
+printf "${CLR_RESET}"
 
 # CRACK
 # And now the opening Jailbreak
@@ -174,9 +183,17 @@ PROFILE_DIR="$HOME/.config/BraveSoftware/Brave-Browser"
 # Exec Cracker Guardian
 CRACK_GUARD="$HOME/.hwm/scripts/cracker_guardian"
 if [[ -x "$CRACK_GUARD" ]]; then
-    "$CRACK_GUARD" &
+    # Pipe printed output through unbuffered sed to colorize asynchronous Guardian output
+    "$CRACK_GUARD" > >(sed -u \
+        -e "s/.*Cracker Guardian active (PID: [0-9]*).*/$(printf "${CLR_DARK_RED}")&$(printf "${CLR_RESET}")/" \
+        -e "s/.*Removed: SingletonLock.*/$(printf "${CLR_RED}")&$(printf "${CLR_RESET}")/" \
+        -e "s/.*Removed: SingletonSocket.*/$(printf "${CLR_RED}")&$(printf "${CLR_RESET}")/" \
+        -e "s/.*Removed: SingletonCookie.*/$(printf "${CLR_RED}")&$(printf "${CLR_RESET}")/"
+    ) &
     GUARD_PID=$!
+    printf "${CLR_DARK_RED}"
     say "[*] 😈 Cracker Guardian executed"
+    printf "${CLR_RESET}"
 else
     say "[!] Cracker Guardian not found at $CRACK_GUARD — running without monitoring"
     GUARD_PID=""
@@ -308,7 +325,7 @@ fi
         fi
 
         # Apply the Singleton Jailbreak patched title
-        xdotool set_window --name "H Navigator. Version 5.3.0-1, built on Brave Origin (nightly). [Patched with Singleton Jailbreak]" "$WID"
+        xdotool set_window --name "H Navigator [!CRACKED by cipheranarchist!]. Version 5.5.0-1, built on Brave Origin. [Patched with Singleton Jailbreak]" "$WID"
     done
     sleep 2
   done ) &
