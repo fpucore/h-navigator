@@ -2,7 +2,7 @@
 source /usr/local/lib/h-linux-env.hash
 
 # -----------------------------------------------------------------------------
-# H Navigator Installer - Version 5.5.1-1
+# H Navigator Installer - Version 5.5.2-1
 # Copyright (c) 2026 Harmonious Platform Systems
 # https://www.freedompublishersunion.net/h-linux.html
 #
@@ -20,7 +20,7 @@ export SRCDEST="/tex"
 
 LOGO_SOURCE="assets/h-navigator-logo-transparent_128px.png"
 LOGO_TARGET="$HOME/Pictures"
-DEB_NAME="brave-browser-nightly_1.100.9_amd64.deb"
+DEB_NAME="brave-browser-nightly_1.100.23_amd64.deb"
 DEB_PATH="$SRCDEST/$DEB_NAME"
 DSIGNED_NAME="${DEB_NAME}.dsigned"
 DSIGNED_PATH="$SRCDEST/$DSIGNED_NAME"
@@ -50,7 +50,7 @@ fi
 sayln
 
 #
-viu --width 16 assets/tomorrows-hackers.png; and printf '\033[1;37;41m 🔥🔥🔥🩸🩸🩸 !CRACKED by cipheranarchist! 🩸🩸🩸🔥🔥🔥 \033[0m\n'
+viu --width 16 assets/tomorrows-hackers.png; and sayln; and printf '\033[1;37;41m 🔥🔥🔥🩸🩸🩸 !CRACKED by cipheranarchist! 🩸🩸🩸🔥🔥🔥 \033[0m\n'
 #
 
 sayln
