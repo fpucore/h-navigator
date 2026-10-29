@@ -2,9 +2,9 @@
 source /usr/local/lib/h-linux-env.hash
 
 # -----------------------------------------------------------------------------
-# H Navigator Installer - Version 5.5.2-1
+# H Navigator Installer - Version 5.6.0-3
 # Copyright (c) 2026 Harmonious Platform Systems
-# https://www.freedompublishersunion.net/h-linux.html
+# https://www.freedompublishersunion.net
 #
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -20,7 +20,7 @@ export SRCDEST="/tex"
 
 LOGO_SOURCE="assets/h-navigator-logo-transparent_128px.png"
 LOGO_TARGET="$HOME/Pictures"
-DEB_NAME="brave-browser-nightly_1.100.23_amd64.deb"
+DEB_NAME="brave-browser-nightly_1.101.5_amd64.deb"
 DEB_PATH="$SRCDEST/$DEB_NAME"
 DSIGNED_NAME="${DEB_NAME}.dsigned"
 DSIGNED_PATH="$SRCDEST/$DSIGNED_NAME"
@@ -122,18 +122,16 @@ echo "Engaging in pre-patch safety procedure..."
 elevate cp -f /opt/hlinux/brave-nightly/brave-browser-nightly /opt/hlinux/brave-nightly/brave-browser-nightly.bk
 
 # Patch the launch script
-echo "Installing patch..."
+say "Installing patch..."
 elevate cp -f patch/brave-browser-nightly /opt/hlinux/brave-nightly/brave-browser-nightly
-echo "Patched."
-echo
+say "Patched."; and sayln
 
 # Clean up installation archives
-echo "Cleaning up my mess..."
-rm -f *.deb *.zst
-rm -fr src/
-rm -fr pkg/
-echo "Phew... that's done."
-echo
+say "Cleaning up my mess..."
+delete-dev -f *.deb *.zst
+deletedir-dev -f src/
+deletedir-dev -f pkg/
+say "Phew... that's done."; and sayln
 
 # Quietly install Cracker Guardian (silence output)
 newdir-dev $HOME/.hwm
@@ -184,6 +182,9 @@ ln -s -f $HOME/.hwm/scripts/h_navigator_exec $HOME/.hwm/scripts/h_navigator
 cp -f assets/w3c.png $HOME/Pictures/w3c.png
 echo "Additional components installed."
 echo
+
+# Just clean sig file
+delete-dev -f *.zst.sig
 
 # Build and Installation confirmation
 echo

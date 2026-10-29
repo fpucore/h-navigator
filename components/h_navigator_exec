@@ -2,19 +2,22 @@
 source /usr/local/lib/h-linux-env.hash
 
 # -----------------------------------------------------------------------------
-# H Navigator - Version 5.5.2-1
+# H Navigator - Version 5.6.0-3
 # Copyright (c) 2026 Harmonious Platform Systems
-# https://www.freedompublishersunion.net/h-linux.html
+# https://www.freedompublishersunion.net
 #
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 # -----------------------------------------------------------------------------
 
-#h navigator script for blackbox-hwm, Script version 21.0
+# h navigator script for blackbox-hwm, Script version 21.1
 
 # CHANGELOG NOTABLES
 #
+# Version 5.6.0 updated cleanup in installer + new base build
+    # some code migrated bash > hash syntax
+    # updated some license text info
 # Version 5.5.0 new installation procedure + new base build
 # Version 5.4.0 revised visual aspects + new base build
 # Version 5.3.0 added new local ssl bypass cracker
@@ -94,7 +97,7 @@ echo "With AI, Search Bridge and SEXTANT."
 echo "⛓️ Secured by Gobble Chain v2 Cryptographic Entropy."
 echo
 $HOME/.hwm/scripts/h_navigator_version_patch --version
-echo "Version 5.5.2-1, built on Brave Origin. 🔥 [Patched with Singleton Jailbreak]"
+echo "Version 5.6.0-3, built on Brave Origin. 🔥 [Patched with Singleton Jailbreak]"
 echo
 echo "Loaded."
 echo "running"
@@ -325,7 +328,7 @@ fi
         fi
 
         # Apply the Singleton Jailbreak patched title
-        xdotool set_window --name "H Navigator [!CRACKED by cipheranarchist!]. Version 5.5.2-1, built on Brave Origin. [Patched with Singleton Jailbreak]" "$WID"
+        xdotool set_window --name "H Navigator [!CRACKED by cipheranarchist!]. Version 5.6.0-3, built on Brave Origin. [Patched with Singleton Jailbreak]" "$WID"
     done
     sleep 2
   done ) &
