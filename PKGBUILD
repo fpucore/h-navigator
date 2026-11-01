@@ -2,8 +2,8 @@
 # Contributor: Greg White <gwhite@kupulau.com>
 
 pkgname=h-navigator
-pkgver=5.6.0
-pkgrel=3
+pkgver=6.0.0
+pkgrel=1
 pkgdesc='A highly modified, privacy-hardened service runtime and web browser for GNU Operating System / H-Linux, built on Brave Origin (nightly).'
 arch=(x86_64)
 url='https://www.freedompublishersunion.net'
@@ -19,7 +19,7 @@ conflicts=('brave-nightly-bin')
 replaces=('brave-nightly-bin')
 source=("$pkgname.sh")
 options=(!strip)
-source_x86_64=("https://github.com/brave/brave-browser/releases/download/v1.101.5/brave-browser-nightly_1.101.5_amd64.deb")
+source_x86_64=("https://github.com/brave/brave-browser/releases/download/v1.101.10/brave-browser-nightly_1.101.10_amd64.deb")
 sha512sums=('SKIP')
 sha512sums_x86_64=('SKIP')
 

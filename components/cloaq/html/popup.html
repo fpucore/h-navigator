@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cloaq</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    body {
+      font-family: 'Source Code Pro', monospace;
+      font-size: 10.0pt;
+    }
+  </style>
+</head>
+
+<body class="w-[400px] bg-[#000000] text-[#FFFFFF]">
+  <header class="flex justify-between items-center px-5 py-4 border-b border-[#FF0000]">
+    <img src="../img/logo.svg" alt="Cloaq Logo" class="h-6" style="filter: invert(1);">
+    <div class="flex gap-5">
+      <button id="reloadButton" title="Reload current page">
+        <img src="../img/reload.svg" alt="Reload" class="w-5" style="filter: invert(1);">
+      </button>
+      <button id="infoButton" title="Info">
+        <img src="../img/info.svg" alt="Info" class="w-5" style="filter: invert(1);">
+      </button>
+    </div>
+  </header>
+
+  <main class="flex flex-col gap-5 p-5">
+    <div>
+      <h2 class="section-title text-[#FF0000] font-bold pb-1">Configuration</h2>
+      <select name="configuration"
+        class="appearance-none cursor-pointer w-full py-2 px-3 border border-[#FF0000] bg-[#000000] text-[#FFFFFF] rounded h-[38px] focus:outline-none bg-[url('/img/arrow.svg')] bg-no-repeat bg-[right_0.75rem_center] bg-[length:1rem]">
+        <option value="browserDefault">Browser Default</option>
+        <option value="ipAddress">IP Address Pairing</option>
+        <option value="custom">Custom</option>
+        <optgroup label="Locations" id="locationsOptGroup">
+        </optgroup>
+      </select>
+    </div>
+
+    <div>
+      <h2 class="section-title text-[#FF0000] font-bold pb-1">Timezone</h2>
+      <input type="text" name="timeZone" class="input border border-[#FF0000] bg-[#000000] text-[#FFFFFF] w-full py-2 px-3 focus:outline-none rounded">
+    </div>
+
+    <div>
+      <h2 class="section-title text-[#FF0000] font-bold pb-1">Locale</h2>
+      <input type="text" name="locale" class="input border border-[#FF0000] bg-[#000000] text-[#FFFFFF] w-full py-2 px-3 focus:outline-none rounded">
+    </div>
+
+    <div class="flex gap-5">
+      <div class="w-full">
+        <h2 class="section-title text-[#FF0000] font-bold pb-1">Latitude</h2>
+        <input type="number" name="latitude" class="input border border-[#FF0000] bg-[#000000] text-[#FFFFFF] w-full py-2 px-3 focus:outline-none rounded">
+      </div>
+      <div class="w-full">
+        <h2 class="section-title text-[#FF0000] font-bold pb-1">Longitude</h2>
+        <input type="number" name="longitude" class="input border border-[#FF0000] bg-[#000000] text-[#FFFFFF] w-full py-2 px-3 focus:outline-none rounded">
+      </div>
+    </div>
+  </main>
+
+  <footer class="flex justify-between items-center px-5 py-4 border-t border-[#FF0000]">
+    
+    <a href="https://www.github.com/www1z4rd/cloaq" target="_blank" class="footer-link text-[#FFFFFF] hover:text-[#FF0000]">Source</a>
+    <div class="text-[#FFFFFF]" id="extensionVersion"></div>
+  </footer>
+  <script src="../js/popup.js" type="module"></script>
+</body>
+
+</html>

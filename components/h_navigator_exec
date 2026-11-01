@@ -2,7 +2,7 @@
 source /usr/local/lib/h-linux-env.hash
 
 # -----------------------------------------------------------------------------
-# H Navigator - Version 5.6.0-3
+# H Navigator - Version 6.0.0-1
 # Copyright (c) 2026 Harmonious Platform Systems
 # https://www.freedompublishersunion.net
 #
@@ -11,10 +11,11 @@ source /usr/local/lib/h-linux-env.hash
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 # -----------------------------------------------------------------------------
 
-# h navigator script for blackbox-hwm, Script version 21.1
+# h navigator script for blackbox-hwm, Script version 22.0
 
 # CHANGELOG NOTABLES
 #
+# version 6.0.0 now includes custom Cloaq extension as a default component, with debug suppression for stable deployment
 # Version 5.6.0 updated cleanup in installer + new base build
     # some code migrated bash > hash syntax
     # updated some license text info
@@ -97,7 +98,7 @@ echo "With AI, Search Bridge and SEXTANT."
 echo "⛓️ Secured by Gobble Chain v2 Cryptographic Entropy."
 echo
 $HOME/.hwm/scripts/h_navigator_version_patch --version
-echo "Version 5.6.0-3, built on Brave Origin. 🔥 [Patched with Singleton Jailbreak]"
+echo "Version 6.0.0-1, built on Brave Origin. 🔥 [Patched with Singleton Jailbreak]"
 echo
 echo "Loaded."
 echo "running"
@@ -252,14 +253,16 @@ mountpoint -q "$H_RAM_CACHE" || \
 # Use H-RAM with http disk cache backend flag enabled (experimental+sql mode)
 
 
-# stable exec
+# stable exec < IGNORE THIS BLOCK
 #h-navigator --user-data-dir="$HOME/.config/BraveSoftware/Brave-Browser" --proxy-server="192.168.1.69:800" &>~/null/h-navigator.output &
 
-# unstable exec
+# unstable exec < USE THIS BLOCK
 h-navigator \
     --user-data-dir="$HOME/.config/BraveSoftware/Brave-Browser" \
     --disk-cache-dir="$H_RAM_CACHE" \
     --proxy-server="192.168.1.69:800" \
+    --load-extension="$HOME/.hwm/extensions/cloaq" \
+    --silent-debugger-extension-api \
     &>"$HOME/null/h-navigator.output" &
 
 LAUNCHER_PID=$!
@@ -328,7 +331,7 @@ fi
         fi
 
         # Apply the Singleton Jailbreak patched title
-        xdotool set_window --name "H Navigator [!CRACKED by cipheranarchist!]. Version 5.6.0-3, built on Brave Origin. [Patched with Singleton Jailbreak]" "$WID"
+        xdotool set_window --name "H Navigator [!CRACKED by cipheranarchist!]. Version 6.0.0-1, built on Brave Origin. [Patched with Singleton Jailbreak]" "$WID"
     done
     sleep 2
   done ) &
