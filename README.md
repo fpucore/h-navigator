@@ -70,6 +70,14 @@ To build and install H Navigator and its associated components on H-Linux:
 
 ---
 
+#### Contributors
+
+Chris McGimpsey-Jones <chrisjones.unixmen@gmail.com>
+(cloaq) www1z4rd <https://www.github.com/www1z4rd>
+(bpc) magnolia1234 <https://www.gitflic.ru/user/magnolia1234>
+
+---
+
 #### License
 
 H Navigator and its associated scripts are distributed under the **Mozilla Public License 2.0 (MPL 2.0)**. 

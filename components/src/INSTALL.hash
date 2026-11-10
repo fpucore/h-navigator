@@ -2,7 +2,7 @@
 source /usr/local/lib/h-linux-env.hash
 
 # -----------------------------------------------------------------------------
-# H Navigator Installer - Version 6.1.0-1
+# H Navigator Installer - Version 7.0.0-1_beta
 # Copyright (c) 2026 Harmonious Platform Systems
 # https://www.freedompublishersunion.net
 #
@@ -166,15 +166,28 @@ echo "Profile interpreter installed."
 echo
 
 # Install additional components for Blackbox-hwm integration
-echo "Installing additional system components..."
+echo "Installing additional system components (extensions and modules linking)..."
    # If these two dirs are not created already you are doing something wrong
 mkdir -p $HOME/.hwm
 mkdir -p $HOME/.hwm/scripts
 mkdir -p $HOME/.hwm/extensions
+
+mkdir -p $HOME/.hwm/modules
+
 cp -f components/h_navigator* $HOME/.hwm/scripts
 cp -f components/sextant* $HOME/.hwm/scripts
 cp -rf components/cloaq $HOME/.hwm/extensions
 cp $LOGO_SOURCE $LOGO_TARGET
+
+if [ -x /usr/bin/rakudo ]; then
+    rakudo components/bpc-pull || { echo "bpc (Raku) failed. Aborting."; exit 1; }
+elif [ -x components/bin/bpc-pull.bin ]; then
+    echo "Rakudo not found in target directory. Executing the fallback precompiled binary."
+    components/bin/bpc-pull.bin || { echo "bpc (Raku) failed. Aborting."; exit 1; }
+else
+    echo -e "\033[1;31m✖ ERROR: Neither /usr/bin/rakudo nor components/bin/bpc-pull.bin is available.\033[0m"
+    exit 1
+fi
 
 # Ensure func is executable
 chmod +x $HOME/.hwm/scripts/h_navigator_profile

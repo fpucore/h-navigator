@@ -1,0 +1,71 @@
+#!/usr/bin/env raku
+
+use v6;
+
+# =========================
+# Configuration
+# =========================
+my Str $zip-url      = "https://gitflic.ru/project/magnolia1234/bpc_uploads/blob/raw?file=bypass-paywalls-chrome-clean-master.zip";
+my Str $download-dir = "{$*HOME}/Blackbox-hwm/Downloads";
+my Str $extract-dir  = "{$*HOME}/.hwm/modules/";
+my Str $archive-name = "bypass-paywalls-chrome-clean-master.zip";
+
+my Str $archive-path = "{$download-dir}/{$archive-name}";
+
+# =========================
+# Helper: run command safely
+# =========================
+sub run-or-die(*@cmd) {
+    say "Running: " ~ @cmd.join(' ');
+    my $proc = run |@cmd, :out, :err;
+    my $exitcode = $proc.exitcode;
+
+    if $exitcode != 0 {
+        my $stderr = $proc.err.slurp-rest // '';
+        die "Command failed (@cmd[]) with exit code {$exitcode}:\n{$stderr}";
+    }
+}
+
+# =========================
+# Dependency checks
+# =========================
+for <curl unzip shred> -> $cmd {
+    my $check = run 'which', $cmd, :out, :err;
+    if $check.exitcode != 0 {
+        die "Required command not found: {$cmd}";
+    }
+}
+
+# =========================
+# Prepare directories
+# =========================
+mkdir $download-dir unless $download-dir.IO.e;
+mkdir $extract-dir  unless $extract-dir.IO.e;
+
+# =========================
+# Cleanup handler
+# =========================
+END {
+    if $archive-path.IO.e {
+        say "Shredding archive: $archive-path";
+        my $proc = run 'shred', '-u', $archive-path, :out, :err;
+        if $proc.exitcode != 0 {
+            note "Warning: shred failed, attempting normal delete";
+            unlink $archive-path;
+        }
+    }
+}
+
+# =========================
+# Download archive
+# =========================
+say "Downloading ZIP from: $zip-url";
+run-or-die 'curl', '-fL', '--retry', '3', '--output', $archive-path, $zip-url;
+
+# =========================
+# Extract archive
+# =========================
+say "Extracting '$archive-path' to '$extract-dir'";
+run-or-die 'unzip', '-o', $archive-path, '-d', $extract-dir;
+
+say "Done.";

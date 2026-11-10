@@ -2,9 +2,9 @@
 # Contributor: Greg White <gwhite@kupulau.com>
 
 pkgname=h-navigator
-pkgver=6.1.0
+pkgver=7.0.0
 pkgrel=1
-pkgdesc='A highly modified, privacy-hardened service runtime and web browser for GNU Operating System / H-Linux, built on Brave Origin (nightly).'
+pkgdesc='[Beta] A highly modified, privacy-hardened service runtime and web browser for GNU Operating System / H-Linux, built on Brave Origin (nightly).'
 arch=(x86_64)
 url='https://www.freedompublishersunion.net'
 license=('MPL2')
