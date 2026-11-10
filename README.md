@@ -16,6 +16,7 @@ H Navigator is a highly-modified, privacy-hardened service runtime and web brows
 *   **Singleton Jailbreak:** Automated stale-lock removal.
 *   **Hardened Flags:** Pre-configured for H-Linux proxy server usage and user-data standards.
 *   **Unique Identity:** Dynamic window enforcement.
+*   **Tightened Integration:** Extensions and Modules compiled at build time (Cloaq+BPC).
 
 ---
 
@@ -37,8 +38,8 @@ Ensure the following are installed and available on GNU Operating System / H-Lin
 
 *   `GNU Operating System / H-Linux`
 *   `Hash`
-*   `Human command layer`
-*   `H-Linux env library`
+*   `Human Command Layer`
+*   `H-Linux Environment Library`
 *   `nullfsvfs-dkms`
 *   `GCC + Clang`
 *   `ccache`
@@ -73,7 +74,9 @@ To build and install H Navigator and its associated components on H-Linux:
 #### Contributors
 
 Chris McGimpsey-Jones <chrisjones.unixmen@gmail.com>
+
 (cloaq) www1z4rd <https://www.github.com/www1z4rd>
+
 (bpc) magnolia1234 <https://www.gitflic.ru/user/magnolia1234>
 
 ---
