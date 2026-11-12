@@ -2,7 +2,7 @@
 source /usr/local/lib/h-linux-env.hash
 
 # -----------------------------------------------------------------------------
-# H Navigator - Version 7.0.0-1_beta
+# H Navigator - Version 7.0.0-2_beta2
 # Copyright (c) 2026 Harmonious Platform Systems
 # https://www.freedompublishersunion.net
 #
@@ -99,7 +99,7 @@ echo "With AI, Search Bridge and SEXTANT."
 echo "⛓️ Secured by Gobble Chain v2 Cryptographic Entropy."
 echo
 $HOME/.hwm/scripts/h_navigator_version_patch --version
-echo "Version 7.0.0-1_beta, built on Brave Origin. 🔥 [Patched with Singleton Jailbreak]"
+echo "Version 7.0.0-1_beta2, built on Brave Origin. 🔥 [Patched with Singleton Jailbreak]"
 echo
 echo "Loaded."
 echo "running"
@@ -332,7 +332,7 @@ fi
         fi
 
         # Apply the Singleton Jailbreak patched title
-        xdotool set_window --name "H Navigator [!CRACKED by cipheranarchist!]. Version 7.0.0-1_beta, built on Brave Origin. [Patched with Singleton Jailbreak]" "$WID"
+        xdotool set_window --name "H Navigator [!CRACKED by cipheranarchist!]. Version 7.0.0-1_beta2, built on Brave Origin. [Patched with Singleton Jailbreak]" "$WID"
     done
     sleep 2
   done ) &

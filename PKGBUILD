@@ -3,8 +3,9 @@
 
 pkgname=h-navigator
 pkgver=7.0.0
-pkgrel=1
-pkgdesc='[Beta] A highly modified, privacy-hardened service runtime and web browser for GNU Operating System / H-Linux, built on Brave Origin (nightly).'
+pkgrel=2
+pkgdesc='[Beta2] A highly modified, privacy-hardened service runtime and web browser for GNU Operating System / H-Linux, built on Brave Origin (nightly).'
+codename=aaron
 arch=(x86_64)
 url='https://www.freedompublishersunion.net'
 license=('MPL2')
@@ -19,7 +20,7 @@ conflicts=('brave-nightly-bin')
 replaces=('brave-nightly-bin')
 source=("$pkgname.sh")
 options=(!strip)
-source_x86_64=("https://github.com/brave/brave-browser/releases/download/v1.101.31/brave-browser-nightly_1.101.31_amd64.deb")
+source_x86_64=("https://github.com/brave/brave-browser/releases/download/v1.102.1/brave-browser-nightly_1.102.1_amd64.deb")
 sha512sums=('SKIP')
 sha512sums_x86_64=('SKIP')
 
