@@ -30,7 +30,7 @@ H Navigator is a highly-modified, privacy-hardened service runtime and web brows
 *   `patch/`: Contains a patched launcher for syntax correction and improved system-level integration.
 *   `components/`: Contains the SEXTANT monitor tool.
 *   `components/src/`: Contains additional components to compile.
-*   `components/bin/`L Contains necessary binary files.
+*   `components/bin/`: Contains necessary binary files.
 *   `assets/`: Contains additional graphic components.
 
 ---
