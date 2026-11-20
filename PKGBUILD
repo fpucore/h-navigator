@@ -3,24 +3,25 @@
 
 pkgname=h-navigator
 pkgver=7.0.0
-pkgrel=3
-pkgdesc='[Beta2] A highly modified, privacy-hardened service runtime and web browser for GNU Operating System / H-Linux, built on Brave Origin (nightly).'
+pkgrel=4
+pkgdesc='[RC] A highly modified, privacy-hardened service runtime and web browser for GNU Operating System / H-Linux, built on Brave Origin (nightly).'
 codename=aaron
 arch=(x86_64)
-url='https://www.freedompublishersunion.net'
+url='https://www.freedompublishersunion.net/h-linux.html'
 license=('MPL2')
-depends=('x86_64-vendor' 'gcc' 'clang' 'ccache' 'fakeroot' 'dpkg' 'gtk3' 'nss' 'alsa-lib' 'libxss' 'ttf-font' 'bc' 'nullfsvfs-dkms' 'dust')
+depends=('x86_64-vendor' 'gcc' 'clang' 'ccache' 'gtk3' 'fakeroot' 'dpkg' 'nss' 'alsa-lib' 'libxss' 'ttf-font' 'bc' 'nullfsvfs-dkms' 'dust')
 optdepends=('cups: Printer support'
             'mesa: Hardware accelerated rendering'
             'mesa-amber: Alternate hardware accelerated rendering'
             'libglvnd: Support multiple different OpenGL drivers at any given time'
             'libgnome-keyring: gnome keyring support')
+            # adwaita-amoled-main > $HOME/.themes/    ## for appropriate UI detection
 provides=("${pkgname}")
 conflicts=('brave-nightly-bin')
 replaces=('brave-nightly-bin')
 source=("$pkgname.sh")
 options=(!strip)
-source_x86_64=("https://github.com/brave/brave-browser/releases/download/v1.102.8/brave-browser-nightly_1.102.8_amd64.deb")
+source_x86_64=("https://github.com/brave/brave-browser/releases/download/v1.102.21/brave-browser-nightly_1.102.21_amd64.deb")
 sha512sums=('SKIP')
 sha512sums_x86_64=('SKIP')
 

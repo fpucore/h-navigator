@@ -2,20 +2,22 @@
 source /usr/local/lib/h-linux-env.hash
 
 # -----------------------------------------------------------------------------
-# H Navigator - Version 7.0.0-3_beta2
+# H Navigator - Version 7.0.0-4_RC
+#
 # Copyright (c) 2026 Harmonious Platform Systems
-# https://www.freedompublishersunion.net
+#   https://www.freedompublishersunion.net
 #
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 # -----------------------------------------------------------------------------
 
-# h navigator script for blackbox-hwm, Script version 23.0
-
 # CHANGELOG NOTABLES
 #
-# Version 7.0.0 now includes automatic compile with precompiled executable binary fallback, and linking to bpc module.
+# Version 7.0.0 now includes automatic compile with precompiled executable binary fallback, and linking to bpc module
+    # smart ui bootstrap
+    # gtk4 w/ dark-mode
+    # integrity checks and air-gapped operations tightened
 # Version 6.0.0 now includes custom Cloaq extension as a default component, with debug suppression for stable deployment
 # Version 5.6.0 updated cleanup in installer + new base build
     # some code migrated bash > hash syntax
@@ -41,6 +43,29 @@ source /usr/local/lib/h-linux-env.hash
 # Version 4.1.0 marked the introduction of h-swap dir in /tmp
 # Version 4.0.0 marked a transition from pre-built packages to H-Linux compiled packages, as h-navigator
 # Version 3.11.0 marked a transition from Brave base > Origin base. Nightly channel remains unchanged
+
+
+# --- Patch compiliance checks ---
+  # Zenit (installed in PATH)
+    if ! command -v Zenit >/dev/null 2>&1; then
+        say "[✖] Compliance check failed: 'Zenit' not detected!"
+        exit 1
+    fi
+
+  # Configuration patch present
+    REQ_CONF="$HOME/.config/picom/picom.conf"
+    REQ_STR="id:uu0aim3Biu8gaiqueewoh3Siqu5cuoHe"
+
+    if [[ ! -f "$REQ_CONF" ]]; then
+        say "[✖] Compliance check failed: $REQ_CONF not detected!"
+        exit 1
+    fi
+
+    if [[ -z "$(sed -n "/$REQ_STR/p" "$REQ_CONF")" ]]; then
+        say "[✖] Compliance check failed: Missing compliance string or $REQ_CONF is corrupted!"
+        exit 1
+    fi
+
 
 # Capture script PID for the C daemon to use as the Process Group ID
 PGID=$$
@@ -99,7 +124,7 @@ echo "With AI, Search Bridge and SEXTANT."
 echo "⛓️ Secured by Gobble Chain v2 Cryptographic Entropy."
 echo
 $HOME/.hwm/scripts/h_navigator_version_patch --version
-echo "Version 7.0.0-3_beta2, built on Brave Origin. 🔥 [Patched with Singleton Jailbreak]"
+echo "Version 7.0.0-4_RC, built on Brave Origin. 🔥 [Patched with Singleton Jailbreak]"
 echo
 echo "Loaded."
 echo "running"
@@ -257,8 +282,24 @@ mountpoint -q "$H_RAM_CACHE" || \
 # stable exec < IGNORE THIS BLOCK
 #h-navigator --user-data-dir="$HOME/.config/BraveSoftware/Brave-Browser" --proxy-server="192.168.1.69:800" &>~/null/h-navigator.output &
 
+
+# DO NOT use these. Use Smart UI bootstrap instead
+#export GTK_THEME="adwaita-amoled-main"
+#export GTK_THEME="Adwaita:dark"
+
+
+# Smart UI bootstrap feature
+    # Force GTK4 dark-mode. Fallback if 'adwaita-amoled-main' is missing
+if [[ -d "$HOME/.themes/adwaita-amoled-main" ]]; then
+    export GTK_THEME="adwaita-amoled-main"
+else
+    export GTK_THEME="Adwaita:dark"
+fi
+
+
 # unstable exec < USE THIS BLOCK
 h-navigator \
+    --gtk-version=4 \
     --user-data-dir="$HOME/.config/BraveSoftware/Brave-Browser" \
     --disk-cache-dir="$H_RAM_CACHE" \
     --proxy-server="192.168.1.69:800" \
@@ -332,7 +373,7 @@ fi
         fi
 
         # Apply the Singleton Jailbreak patched title
-        xdotool set_window --name "H Navigator [!CRACKED by cipheranarchist!]. Version 7.0.0-3_beta2, built on Brave Origin. [Patched with Singleton Jailbreak]" "$WID"
+        xdotool set_window --name "H Navigator [!CRACKED by cipheranarchist!]. Version 7.0.0-4_RC, built on Brave Origin. [Patched with Singleton Jailbreak]" "$WID"
     done
     sleep 2
   done ) &

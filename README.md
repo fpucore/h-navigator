@@ -10,11 +10,13 @@ H Navigator is a highly-modified, privacy-hardened service runtime and web brows
 
 *   **H-Profile Interpreter (w/ legacy-fallback):** A native interpreter for profile administration, backups and restoration.
 *   **Blockchain Entropy (w/ fallback-mode):** Anonymous, local key generation maximizing runtime unpredictability and cryptographic security.
-*   **Pulse:** A zero-CPU C-based heartbeat monitor with graceful termination features.
+*   **Smart UI bootstrap (w/ fallback-mde):** Adaptive UI detection schema.
+*   **Dual-Pulse:** A zero-CPU C-based heartbeat monitor with graceful termination features.
 *   **Sextant Integration:** Live core monitoring via the `sextant.sh` script.
 *   **Tamper-proof builds:** Air-gapped, dual-SHA-512 .dsigned caching mechanism guaranteeing integrity of packages before execution during build.
+*   **Tamper-proof operations:** Air-gapped operations mechanism.
 *   **Singleton Jailbreak:** Automated stale-lock removal.
-*   **Hardened Flags:** Pre-configured for H-Linux proxy server usage and user-data standards.
+*   **Hardened Flags:** Pre-configured for GNU Operating System / H-Linux proxy server usage and user-data standards.
 *   **Unique Identity:** Dynamic window enforcement.
 *   **Tightened Integration:** Extensions and Modules compiled at build time (Cloaq+BPC).
 
@@ -28,6 +30,7 @@ H Navigator is a highly-modified, privacy-hardened service runtime and web brows
 *   `patch/`: Contains a patched launcher for syntax correction and improved system-level integration.
 *   `components/`: Contains the SEXTANT monitor tool.
 *   `components/src/`: Contains additional components to compile.
+*   `components/bin/`L Contains necessary binary files.
 *   `assets/`: Contains additional graphic components.
 
 ---
@@ -41,9 +44,10 @@ Ensure the following are installed and available on GNU Operating System / H-Lin
 *   `Human Command Layer`
 *   `H-Linux Environment Library`
 *   `nullfsvfs-dkms`
-*   `GCC + Clang`
+*   `GCC + Clang` (yes, both)
 *   `ccache`
 *   `sh2c` (optional)
+*   `adwaita-amoled-main` (optional)
 
 ---
 
